@@ -1,7 +1,7 @@
 import 'dart:html';
 import 'dart:js';
 
-import '../basic_interfaces.dart';
+import '../traits/traits.dart';
 import '../box/box.dart';
 import '../camera.dart';
 import '../vector.dart';

@@ -1,6 +1,6 @@
 import 'dart:core';
 
-import '../basic_interfaces.dart';
+import '../traits/traits.dart';
 import 'dart:html';
 
 import '../camera.dart';

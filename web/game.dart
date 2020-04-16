@@ -7,7 +7,7 @@ import 'tiles/matrix.dart';
 import 'tiles/tiles.dart';
 import 'timer.dart';
 import 'entities/entities.dart';
-import 'basic_interfaces.dart';
+import 'traits/traits.dart';
 import 'traits/movable.dart';
 import 'vector.dart';
 

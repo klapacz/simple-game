@@ -1,10 +1,9 @@
 import '../box/box.dart';
-import '../basic_interfaces.dart';
 
 import '../game.dart';
 import '../vector.dart';
 
-import '../traits/movable.dart';
+import '../traits/traits.dart';
 
 mixin Jump on Movable {
   bool isJumping = false;

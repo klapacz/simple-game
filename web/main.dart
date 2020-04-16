@@ -1,15 +1,6 @@
 import 'dart:convert';
 import 'dart:html';
-import 'box/box.dart';
-import 'camera.dart';
-import 'keyboard.dart';
-import 'tiles/matrix.dart';
-import 'tiles/tiles.dart';
-import 'timer.dart';
 import 'entities/entities.dart';
-import 'basic_interfaces.dart';
-import 'traits/movable.dart';
-import 'vector.dart';
 
 import 'game.dart';
 
