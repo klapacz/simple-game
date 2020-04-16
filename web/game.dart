@@ -1,9 +1,6 @@
-import 'dart:convert';
 import 'dart:html';
-import 'box/box.dart';
 import 'camera.dart';
 import 'keyboard.dart';
-import 'tiles/matrix.dart';
 import 'tiles/tiles.dart';
 import 'timer.dart';
 import 'entities/entities.dart';
@@ -61,9 +58,12 @@ class Game {
 
       entities.forEach((entity) {
         if (entity is Drawable) entity.draw(context, camera);
+
         if (entity is Updateable) {
           entity.update(deltaTime, this);
         }
+
+        if (entity is Jump) entity.updateJump(deltaTime, this);
 
         if (entity is Movable) entity.updateMove(deltaTime, this);
       });

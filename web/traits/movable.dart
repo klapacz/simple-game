@@ -9,7 +9,7 @@ enum Directions { Left, Right, Top, Bottom }
 
 mixin Movable on Box {
   var collisionDirections = <Directions>{};
-  Vector velocity;
+  Vector velocity = Vector.blank();
 
   void moveAndCheckCollision({Tiles tiles}) {
     collisionDirections.clear();
