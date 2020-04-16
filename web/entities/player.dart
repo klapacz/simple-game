@@ -1,7 +1,7 @@
 import '../box/box.dart';
 import '../basic_interfaces.dart';
 
-import '../main.dart';
+import '../game.dart';
 import '../vector.dart';
 
 import '../traits/movable.dart';

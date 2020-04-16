@@ -1,6 +1,6 @@
 import 'dart:core';
 
-import '../main.dart';
+import '../game.dart';
 import '../tiles/tiles.dart';
 import '../vector.dart';
 import '../box/box.dart';

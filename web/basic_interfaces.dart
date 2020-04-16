@@ -1,7 +1,7 @@
 import 'dart:html';
 
 import 'camera.dart';
-import 'main.dart';
+import 'game.dart';
 
 abstract class Drawable {
   void draw(CanvasRenderingContext2D context, Camera camera);

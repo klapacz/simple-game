@@ -3,7 +3,7 @@ import 'dart:html';
 
 import '../box/box.dart';
 import '../camera.dart';
-import '../main.dart';
+import '../game.dart';
 import '../vector.dart';
 
 export 'player.dart';
