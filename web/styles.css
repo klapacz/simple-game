@@ -1,0 +1,38 @@
+html,
+body {
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.wrapper {
+    margin: 5px;
+}
+
+#output {
+    border: 1px solid black;
+    image-rendering: pixelated;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+button {
+    background-color: inherit;
+    border: 1px solid black;
+    font-family: VT323;
+    font-size: 25px;
+    display: block;
+    width: calc(100% / 3);
+    border-right: none;
+}
+
+.buttons:last-child {
+    border-right: 1px solid black;
+}
