@@ -17,13 +17,13 @@ void main() async {
   game.camera.toFollow = player;
   game.debugger.player = player;
 
-  void setScale(scale) {
-    game.camera.scale = scale;
-  }
+  NumberInputElement input = querySelector('input[type=number]');
 
-  [1, 2, 4].forEach((index) => querySelector('.scale-$index')
-      .onClick
-      .listen((event) => setScale(index)));
+  input.value = '${game.camera.scale}';
+
+  input.onChange.listen((event) {
+    game.camera.scale = input.valueAsNumber;
+  });
 
   game.entities.addAll([
     Background(game.canvasSize, color: '#5d988d'),
