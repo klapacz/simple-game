@@ -7,9 +7,9 @@ class Camera {
   num scale = 2;
   Game game;
 
-  Vector size;
+  Vector get size => game.canvasSize;
 
-  Camera(this.game, this.size);
+  Camera(this.game);
 
   Box transform(Box box) {
     final tranformedToFollow = toFollow.scaled(scale).rouned;

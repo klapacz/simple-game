@@ -20,26 +20,40 @@ class Game {
   CanvasElement canvas;
   CanvasRenderingContext2D context;
 
-  Vector canvasSize = Vector(500, 400);
+  Vector canvasSize;
+
+  void updateCanvasSizeAndSetContext(Vector newCanvasSize) {
+    canvasSize = newCanvasSize;
+
+    canvas.width = canvasSize.x;
+    canvas.height = canvasSize.y;
+
+    context = canvas.context2D;
+    context.imageSmoothingEnabled = false;
+  }
 
   Game(canvasSelector, scheet, data) {
-    setupCanvas(canvasSelector);
+    setupCanvas(canvasSelector, Vector(500, 400));
     keyboard = Keyboard();
-    camera = Camera(this, canvasSize);
+    camera = Camera(this);
     tilesMap = TilesMap(scheet, data);
 
     setupDebugger();
   }
 
-  void setupCanvas(canvasSelector) {
+  void setupCanvas(canvasSelector, Vector defaultSize) {
     canvas = querySelector(canvasSelector);
 
-    canvas
-      ..width = canvasSize.x
-      ..height = canvasSize.y;
+    canvas.onFullscreenChange.listen((event) {
+      if (document.fullscreenElement == canvas) {
+        updateCanvasSizeAndSetContext(
+            Vector(document.body.clientWidth, document.body.clientHeight));
+      } else {
+        updateCanvasSizeAndSetContext(defaultSize);
+      }
+    });
 
-    context = canvas.context2D;
-    context.imageSmoothingEnabled = false;
+    updateCanvasSizeAndSetContext(defaultSize);
   }
 
   void setupDebugger() {
@@ -55,6 +69,10 @@ class Game {
   void start(Function(num, Game) globalUpdate) {
     timer = Timer((deltaTime) {
       globalUpdate(deltaTime, this);
+
+      if (keyboard.isClickedKey('f')) {
+        canvas.requestFullscreen();
+      }
 
       entities.forEach((entity) {
         if (entity is Drawable) entity.draw(context, camera);
