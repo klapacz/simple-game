@@ -62,8 +62,9 @@ class Game with CanvasUtilities {
       }
 
       if (entity is Animation) entity.updateAnimation(deltaTime, this);
-      if (entity is Movable) entity.updateMovable(deltaTime, this);
       if (entity is Jump) entity.updateJump(deltaTime, this);
+      if (entity is Gravity) entity.updateGravity();
+      if (entity is Movable) entity.updateMovable(deltaTime, this);
     }
   }
 

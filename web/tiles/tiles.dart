@@ -33,7 +33,7 @@ class TilesMap extends Drawable {
     size = Vector(data['width'], data['height']);
 
     for (var layerData in data['layers']) {
-      layers.add(Layer(this, layerData));
+      if (layerData['type'] == 'tilelayer') layers.add(Layer(this, layerData));
     }
   }
 

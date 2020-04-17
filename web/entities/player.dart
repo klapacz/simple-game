@@ -36,13 +36,10 @@ mixin PlayerAnimation on Animation, Movable {
   }
 }
 
-class Player extends Box
-    with Movable, Jump, Animation, PlayerAnimation
-    implements Updateable, Drawable {
+class Player extends Physical with Jump, Animation, PlayerAnimation {
   final speed = 100;
   @override
   final defaultJumpTime = 21;
-  final gravity = Vector(0, 100);
 
   Player() : super(Vector(10, 10), Vector(15, 23));
 
@@ -59,7 +56,6 @@ class Player extends Box
     }
 
     velocity.x += go;
-    velocity += gravity;
 
     if (minY > game.tilesMap.size.y * game.tilesMap.tileSize) {
       position = Vector.blank();

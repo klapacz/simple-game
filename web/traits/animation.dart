@@ -1,7 +1,7 @@
 import '../box/box.dart';
 import '../game.dart';
 
-class Animation {
+mixin Animation {
   Map<String, List<Box>> animations;
 
   String currentAnimation;
