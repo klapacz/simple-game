@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import '../game.dart';
 import '../traits/traits.dart';
 import 'dart:html';
 
@@ -14,7 +15,7 @@ class ColorBox extends Box implements Drawable {
       : super(position, size);
 
   @override
-  void draw(CanvasRenderingContext2D context, Camera camera) {
+  void draw(CanvasRenderingContext2D context, Camera camera, Game game) {
     var toDraw = blockCamera ? this : camera.transform(this);
 
     context

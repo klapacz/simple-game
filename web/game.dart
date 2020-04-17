@@ -25,7 +25,8 @@ class Game with CanvasUtilities {
     data = await fetchAllAs({
       'sheet': fetchImage('assets/sheet.png'),
       'characters': fetchImage('assets/characters.png'),
-      'levelData': fetchJson('assets/level-1.json'),
+      // 'levelData': fetchJson('assets/level-1.json'),
+      'levelData': fetchJson('assets/flat.json'),
     });
 
     setupCanvas('#output', Vector(500, 400));
@@ -60,6 +61,7 @@ class Game with CanvasUtilities {
         entity.update(deltaTime, this);
       }
 
+      if (entity is Animation) entity.updateAnimation(deltaTime, this);
       if (entity is Movable) entity.updateMovable(deltaTime, this);
       if (entity is Jump) entity.updateJump(deltaTime, this);
     }
@@ -67,7 +69,7 @@ class Game with CanvasUtilities {
 
   void draw() {
     for (var entity in entities) {
-      if (entity is Drawable) entity.draw(context, camera);
+      if (entity is Drawable) entity.draw(context, camera, this);
     }
   }
 

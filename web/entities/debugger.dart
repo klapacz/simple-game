@@ -18,7 +18,7 @@ class Debugger implements Drawable, Updateable {
   void update(num deltaTime, Game game) {}
 
   @override
-  void draw(CanvasRenderingContext2D context, Camera camera) {
+  void draw(CanvasRenderingContext2D context, Camera camera, game) {
     context
       ..font = '30px VT323, monospace'
       ..fillStyle = '#efefef';

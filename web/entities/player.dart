@@ -5,42 +5,74 @@ import '../vector.dart';
 
 import '../traits/traits.dart';
 
-class Player extends Box with Movable, Jump implements Updateable, Drawable {
+mixin PlayerAnimation on Animation, Movable {
+  @override
+  final animations = {
+    'go': [
+      Box(Vector(104, 41), Vector(17, 23)),
+      Box(Vector(9, 41), Vector(17, 23)),
+      Box(Vector(41, 41), Vector(17, 23)),
+      Box(Vector(72, 41), Vector(17, 23)),
+    ],
+    'stop': [Box(Vector(9, 41), Vector(17, 23))],
+    'jump': [Box(Vector(168, 41), Vector(17, 23))],
+    'fall': [Box(Vector(200, 41), Vector(17, 23))],
+  };
+
+  num lastPositionY = 0;
+
+  @override
+  void changeFrame() {
+    if (collisionDirections.contains(Directions.Bottom)) {
+      currentAnimation = velocity.x == 0 ? 'stop' : 'go';
+    } else {
+      currentAnimation = position.y < lastPositionY ? 'jump' : 'fall';
+    }
+
+    if (velocity.x > 0) flipFrame = false;
+    if (velocity.x < 0) flipFrame = true;
+
+    lastPositionY = position.y;
+  }
+}
+
+class Player extends Box
+    with Movable, Jump, Animation, PlayerAnimation
+    implements Updateable, Drawable {
   final speed = 100;
   @override
   final defaultJumpTime = 21;
   final gravity = Vector(0, 100);
 
-  Player() : super(Vector(10, 10), Vector(15, 20));
+  Player() : super(Vector(10, 10), Vector(15, 23));
 
   @override
   void update(num deltaTime, Game game) {
-    var speedX = 0, speedY = 0;
+    var go = 0;
 
-    if (game.keyboard.isClickedKey('a')) speedX = -speed;
-    if (game.keyboard.isClickedKey('d')) speedX = speed;
-
-    // if (game.keyboard.isClickedKey('w')) speedY = -speed;
-    // if (game.keyboard.isClickedKey('s')) speedY = speed;
-
+    if (game.keyboard.isClickedKey('a')) go = -speed;
+    if (game.keyboard.isClickedKey('d')) go = speed;
     if (game.keyboard.isClickedKey(' ')) {
       startJump();
     } else {
       stopJump();
     }
 
-    velocity += (Vector(speedX, speedY) + gravity); //
+    velocity.x += go;
+    velocity += gravity;
 
-    if (minY > 20 * 16) position = Vector.blank();
+    if (minY > game.tilesMap.size.y * game.tilesMap.tileSize) {
+      position = Vector.blank();
+    }
   }
 
   @override
-  void draw(context, camera) {
-    var toDraw = camera.transform(this);
+  void draw(context, camera, game) {
+    drawFrame(context, camera, game);
 
-    context
-      ..fillStyle = 'purple'
-      ..fillRect(
-          toDraw.position.x, toDraw.position.y, toDraw.size.x, toDraw.size.y);
+    // context
+    //   ..fillStyle = '#80008033'
+    //   ..fillRect(
+    //       toDraw.position.x, toDraw.position.y, toDraw.size.x, toDraw.size.y);
   }
 }

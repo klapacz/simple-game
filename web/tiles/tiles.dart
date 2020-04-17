@@ -1,5 +1,6 @@
 import 'dart:html';
 
+import '../game.dart';
 import '../traits/traits.dart';
 import '../box/box.dart';
 import '../camera.dart';
@@ -41,7 +42,7 @@ class TilesMap extends Drawable {
   }
 
   @override
-  void draw(CanvasRenderingContext2D context, Camera camera) {
+  void draw(CanvasRenderingContext2D context, Camera camera, Game game) {
     for (var layer in layers) {
       var toDraw = camera.transform(layer.imageBox);
 
