@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'entities/entities.dart';
 import 'fetch.dart';
 
@@ -19,7 +18,7 @@ void main() async {
 
   game.entities.addAll([
     Background(game.canvasSize, color: '#5d988d'),
-    game.tiles,
+    game.tilesMap,
     player,
     game.debugger
   ]);

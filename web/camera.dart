@@ -20,7 +20,8 @@ class Camera {
     final centerPlayerOnY = tranformedToFollow.position.y >
         size.y / 2 - tranformedToFollow.size.y / 2;
 
-    final transformedMapSize = game.tiles.size * 16 * scale;
+    final transformedMapSize =
+        game.tilesMap.size * game.tilesMap.tileSize * scale;
 
     final onMapEndY =
         tranformedToFollow.centerY > transformedMapSize.y - size.y / 2;

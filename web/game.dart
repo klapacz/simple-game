@@ -11,7 +11,7 @@ import 'vector.dart';
 class Game {
   Keyboard keyboard;
   Camera camera;
-  Tiles tiles;
+  TilesMap tilesMap;
   Debugger debugger;
   Timer timer;
 
@@ -26,7 +26,7 @@ class Game {
     setupCanvas(canvasSelector);
     keyboard = Keyboard();
     camera = Camera(this, canvasSize);
-    tiles = Tiles(scheet, data);
+    tilesMap = TilesMap(scheet, data);
 
     setupDebugger();
   }

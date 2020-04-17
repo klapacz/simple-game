@@ -4,70 +4,18 @@ import '../traits/traits.dart';
 import '../box/box.dart';
 import '../camera.dart';
 import '../vector.dart';
+
 import 'matrix.dart';
+import 'layer.dart';
+import 'tile.dart';
 
-class Tile extends Box {
-  int number, x, y;
-
-  Tile(this.x, this.y, this.number, size)
-      : super(Vector(x, y) * size, Vector.same(size));
-}
+export 'tile.dart';
 
 class TileResolver {
   ImageElement sheet;
 }
 
-class Layer {
-  String name;
-  ImageElement sheet;
-  Matrix<Tile> tiles;
-
-  CanvasElement tilesImage;
-  Box imageBox;
-
-  int tileSize;
-  Vector size;
-
-  Layer(this.tileSize, this.sheet, Map layerData) {
-    name = layerData['name'];
-    size = Vector(layerData['width'], layerData['height']);
-
-    var rawTilesMatrix = Matrix.fromList(layerData['data'], size);
-
-    tiles = Matrix.fromMatrix(rawTilesMatrix, (x, y, number) {
-      return number != 0 ? Tile(x, y, number - 1, tileSize) : null;
-    });
-
-    updateTilesImage();
-  }
-
-  void updateTilesImage() {
-    imageBox = Box(Vector.blank(), tiles.size * tileSize);
-    tilesImage = CanvasElement(width: imageBox.size.x, height: imageBox.size.y);
-    var context = tilesImage.context2D;
-
-    tiles.forEach((Tile tile) {
-      var y = (tile.number * tileSize / sheet.width).floor();
-      var x = (tile.number * tileSize - sheet.width * y);
-
-      y *= tileSize;
-
-      context.drawImageScaledFromSource(sheet, x, y, tileSize, tileSize,
-          tile.minX, tile.minY, tileSize, tileSize);
-    });
-  }
-
-  Matrix<Tile> collidingTiles(Box box) {
-    var minY = (box.minY / tileSize).floor(),
-        maxY = (box.maxY / tileSize).ceil();
-    var minX = (box.minX / tileSize).floor(),
-        maxX = (box.maxX / tileSize).ceil();
-
-    return tiles.getPart(minX, minY, maxX, maxY);
-  }
-}
-
-class Tiles extends Drawable {
+class TilesMap extends Drawable {
   ImageElement sheet;
 
   CanvasElement tilesImage;
@@ -80,11 +28,11 @@ class Tiles extends Drawable {
   var tileSize = 16;
   Vector size;
 
-  Tiles(this.sheet, Map data) {
+  TilesMap(this.sheet, Map data) {
     size = Vector(data['width'], data['height']);
 
     for (var layerData in data['layers']) {
-      layers.add(Layer(tileSize, sheet, layerData));
+      layers.add(Layer(this, layerData));
     }
   }
 

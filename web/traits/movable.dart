@@ -11,13 +11,13 @@ mixin Movable on Box {
   var collisionDirections = <Directions>{};
   Vector velocity = Vector.blank();
 
-  void moveAndCheckCollision({Tiles tiles}) {
+  void moveAndCheckCollision({TilesMap tilesMap}) {
     collisionDirections.clear();
 
     if (velocity.x != 0) {
       position.x += velocity.x;
 
-      tiles.collidingTiles(this).forEach((Box block) {
+      tilesMap.collidingTiles(this).forEach((Box block) {
         if (velocity.x > 0) {
           position.x = block.minX - size.x;
           collisionDirections.add(Directions.Right);
@@ -31,7 +31,7 @@ mixin Movable on Box {
     if (velocity.y != 0) {
       position.y += velocity.y;
 
-      tiles.collidingTiles(this).forEach((Box block) {
+      tilesMap.collidingTiles(this).forEach((Box block) {
         if (velocity.y > 0) {
           position.y = block.minY - size.y;
           collisionDirections.add(Directions.Bottom);
@@ -46,7 +46,7 @@ mixin Movable on Box {
   void updateMove(num deltaTime, Game game) {
     velocity *= deltaTime;
 
-    moveAndCheckCollision(tiles: game.tiles);
+    moveAndCheckCollision(tilesMap: game.tilesMap);
 
     velocity = Vector.blank();
   }
