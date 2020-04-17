@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'camera.dart';
 import 'keyboard.dart';
 import 'tiles/tiles.dart';
@@ -6,9 +5,12 @@ import 'timer.dart';
 import 'entities/entities.dart';
 import 'traits/traits.dart';
 import 'traits/movable.dart';
+import 'utilities/canvas.dart';
 import 'vector.dart';
 
-class Game {
+import 'utilities/fetch.dart';
+
+class Game with CanvasUtilities {
   Keyboard keyboard;
   Camera camera;
   TilesMap tilesMap;
@@ -17,43 +19,21 @@ class Game {
 
   List entities = [];
 
-  CanvasElement canvas;
-  CanvasRenderingContext2D context;
+  Map data;
 
-  Vector canvasSize;
-
-  void updateCanvasSizeAndSetContext(Vector newCanvasSize) {
-    canvasSize = newCanvasSize;
-
-    canvas.width = canvasSize.x;
-    canvas.height = canvasSize.y;
-
-    context = canvas.context2D;
-    context.imageSmoothingEnabled = false;
-  }
-
-  Game(canvasSelector, scheet, data) {
-    setupCanvas(canvasSelector, Vector(500, 400));
-    keyboard = Keyboard();
-    camera = Camera(this);
-    tilesMap = TilesMap(scheet, data);
-
-    setupDebugger();
-  }
-
-  void setupCanvas(canvasSelector, Vector defaultSize) {
-    canvas = querySelector(canvasSelector);
-
-    canvas.onFullscreenChange.listen((event) {
-      if (document.fullscreenElement == canvas) {
-        updateCanvasSizeAndSetContext(
-            Vector(document.body.clientWidth, document.body.clientHeight));
-      } else {
-        updateCanvasSizeAndSetContext(defaultSize);
-      }
+  void setup() async {
+    data = await fetchAllAs({
+      'sheet': fetchImage('assets/sheet.png'),
+      'characters': fetchImage('assets/characters.png'),
+      'levelData': fetchJson('assets/level-1.json'),
     });
 
-    updateCanvasSizeAndSetContext(defaultSize);
+    setupCanvas('#output', Vector(500, 400));
+    keyboard = Keyboard();
+    camera = Camera(this);
+    tilesMap = TilesMap(data['sheet'], data['levelData']);
+
+    setupDebugger();
   }
 
   void setupDebugger() {
@@ -66,27 +46,32 @@ class Game {
     ]);
   }
 
-  void start(Function(num, Game) globalUpdate) {
-    timer = Timer((deltaTime) {
-      globalUpdate(deltaTime, this);
+  void update(deltaTime) {
+    if (keyboard.isClickedKey('f')) {
+      canvas.requestFullscreen();
+    }
 
-      if (keyboard.isClickedKey('f')) {
-        canvas.requestFullscreen();
+    for (var i = 1; i < 10; i++) {
+      if (keyboard.isClickedKey('$i')) camera.scale = i;
+    }
+
+    for (var entity in entities) {
+      if (entity is Updateable) {
+        entity.update(deltaTime, this);
       }
 
-      for (var entity in entities) {
-        if (entity is Updateable) {
-          entity.update(deltaTime, this);
-        }
+      if (entity is Movable) entity.updateMovable(deltaTime, this);
+      if (entity is Jump) entity.updateJump(deltaTime, this);
+    }
+  }
 
-        if (entity is Jump) entity.updateJump(deltaTime, this);
+  void draw() {
+    for (var entity in entities) {
+      if (entity is Drawable) entity.draw(context, camera);
+    }
+  }
 
-        if (entity is Movable) entity.updateMove(deltaTime, this);
-      }
-    }, () {
-      for (var entity in entities) {
-        if (entity is Drawable) entity.draw(context, camera);
-      }
-    });
+  void start() {
+    timer = Timer(update, draw);
   }
 }

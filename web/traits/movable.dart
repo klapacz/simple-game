@@ -43,7 +43,7 @@ mixin Movable on Box {
     }
   }
 
-  void updateMove(num deltaTime, Game game) {
+  void updateMovable(num deltaTime, Game game) {
     velocity *= deltaTime;
 
     moveAndCheckCollision(tilesMap: game.tilesMap);

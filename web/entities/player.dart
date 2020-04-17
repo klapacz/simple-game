@@ -5,13 +5,13 @@ import '../vector.dart';
 
 import '../traits/traits.dart';
 
-class Player extends ColorBox with Movable, Jump implements Updateable {
+class Player extends Box with Movable, Jump implements Updateable, Drawable {
   final speed = 100;
   @override
   final defaultJumpTime = 21;
   final gravity = Vector(0, 100);
 
-  Player() : super(Vector(10, 10), Vector(15, 20), 'purple');
+  Player() : super(Vector(10, 10), Vector(15, 20));
 
   @override
   void update(num deltaTime, Game game) {
@@ -32,5 +32,15 @@ class Player extends ColorBox with Movable, Jump implements Updateable {
     velocity += (Vector(speedX, speedY) + gravity); //
 
     if (minY > 20 * 16) position = Vector.blank();
+  }
+
+  @override
+  void draw(context, camera) {
+    var toDraw = camera.transform(this);
+
+    context
+      ..fillStyle = 'purple'
+      ..fillRect(
+          toDraw.position.x, toDraw.position.y, toDraw.size.x, toDraw.size.y);
   }
 }

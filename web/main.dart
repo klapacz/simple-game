@@ -1,16 +1,21 @@
 import 'entities/entities.dart';
-import 'fetch.dart';
 
 import 'game.dart';
 
 void main() async {
-  final response = await Future.wait(
-      [fetchImage('assets/sheet.png'), fetchJson('assets/level-1.json')]);
+  // final response = await Future.wait([
+  //   fetchImage('assets/sheet.png'),
+  //   fetchImage('assets/characters.png'),
+  //   fetchJson('assets/level-1.json')
+  // ]);
 
-  final image = response[0];
-  final data = response[1];
+  // ImageElement sheet = response[0];
+  // ImageElement characters = response[1];
+  // Map data = response[2];
 
-  final game = Game('#output', image, data);
+  final game = Game();
+  await game.setup();
+
   final player = Player();
 
   game.camera.toFollow = player;
@@ -23,9 +28,5 @@ void main() async {
     game.debugger
   ]);
 
-  game.start((num deltaTime, Game game) {
-    for (var i = 1; i < 10; i++) {
-      if (game.keyboard.isClickedKey('$i')) game.camera.scale = i;
-    }
-  });
+  game.start();
 }

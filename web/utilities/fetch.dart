@@ -16,3 +16,14 @@ Future<Map> fetchJson(url) async {
 
   return jsonData;
 }
+
+Future<Map> fetchAllAs(Map<String, Future> toFetch) async {
+  final response = await Future.wait(toFetch.values);
+  final result = {};
+
+  for (var i = 0; i < toFetch.length; i++) {
+    result[toFetch.keys.elementAt(i)] = response.elementAt(i);
+  }
+
+  return result;
+}
