@@ -21,7 +21,7 @@ class Debugger implements Drawable, Updateable {
   void draw(CanvasRenderingContext2D context, Camera camera) {
     context
       ..font = '30px VT323, monospace'
-      ..fillStyle = 'black';
+      ..fillStyle = '#efefef';
 
     texts.asMap().forEach((i, text) {
       context.fillText(text(), 10, 40 + 40 * i);

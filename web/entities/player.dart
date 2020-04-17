@@ -11,7 +11,7 @@ class Player extends ColorBox with Movable, Jump implements Updateable {
   final defaultJumpTime = 21;
   final gravity = Vector(0, 100);
 
-  Player() : super(Vector(10, 10), Vector(20, 20), 'red');
+  Player() : super(Vector(10, 10), Vector(15, 20), 'purple');
 
   @override
   void update(num deltaTime, Game game) {
@@ -31,10 +31,6 @@ class Player extends ColorBox with Movable, Jump implements Updateable {
 
     velocity += (Vector(speedX, speedY) + gravity); //
 
-    game.tiles.collidingTiles(this);
-
-    // if (game.tiles.jumpTiles.where((tile) => aabb(this, tile)).isNotEmpty) {
-    //   startJump();
-    // }
+    if (minY > 20 * 16) position = Vector.blank();
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:html';
-import 'dart:js';
 
 import '../traits/traits.dart';
 import '../box/box.dart';
@@ -26,40 +25,43 @@ class Layer {
   CanvasElement tilesImage;
   Box imageBox;
 
-  int size;
+  int tileSize;
+  Vector size;
 
-  Layer(this.size, this.sheet, Map layerData) {
+  Layer(this.tileSize, this.sheet, Map layerData) {
     name = layerData['name'];
+    size = Vector(layerData['width'], layerData['height']);
 
-    var rawTilesMatrix = Matrix.fromList(
-        layerData['data'], layerData['height'], layerData['width']);
+    var rawTilesMatrix = Matrix.fromList(layerData['data'], size);
 
     tiles = Matrix.fromMatrix(rawTilesMatrix, (x, y, number) {
-      return number != 0 ? Tile(x, y, number - 1, size) : null;
+      return number != 0 ? Tile(x, y, number - 1, tileSize) : null;
     });
 
     updateTilesImage();
   }
 
   void updateTilesImage() {
-    imageBox = Box(Vector.blank(), tiles.size * size);
+    imageBox = Box(Vector.blank(), tiles.size * tileSize);
     tilesImage = CanvasElement(width: imageBox.size.x, height: imageBox.size.y);
     var context = tilesImage.context2D;
 
     tiles.forEach((Tile tile) {
-      var y = (tile.number * size / sheet.width).floor();
-      var x = (tile.number * size - sheet.width * y);
+      var y = (tile.number * tileSize / sheet.width).floor();
+      var x = (tile.number * tileSize - sheet.width * y);
 
-      y *= size;
+      y *= tileSize;
 
-      context.drawImageScaledFromSource(
-          sheet, x, y, size, size, tile.minX, tile.minY, size, size);
+      context.drawImageScaledFromSource(sheet, x, y, tileSize, tileSize,
+          tile.minX, tile.minY, tileSize, tileSize);
     });
   }
 
   Matrix<Tile> collidingTiles(Box box) {
-    var minY = (box.minY / size).floor(), maxY = (box.maxY / size).ceil();
-    var minX = (box.minX / size).floor(), maxX = (box.maxX / size).ceil();
+    var minY = (box.minY / tileSize).floor(),
+        maxY = (box.maxY / tileSize).ceil();
+    var minX = (box.minX / tileSize).floor(),
+        maxX = (box.maxX / tileSize).ceil();
 
     return tiles.getPart(minX, minY, maxX, maxY);
   }
@@ -75,11 +77,14 @@ class Tiles extends Drawable {
   Layer get collisionLayer =>
       layers.firstWhere((layer) => layer.name == 'collision');
 
-  var size = 16;
+  var tileSize = 16;
+  Vector size;
 
   Tiles(this.sheet, Map data) {
+    size = Vector(data['width'], data['height']);
+
     for (var layerData in data['layers']) {
-      layers.add(Layer(size, sheet, layerData));
+      layers.add(Layer(tileSize, sheet, layerData));
     }
   }
 
