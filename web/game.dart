@@ -25,7 +25,7 @@ class Game {
   Game(canvasSelector, scheet, data) {
     setupCanvas(canvasSelector);
     keyboard = Keyboard();
-    camera = Camera(canvasSize, 2);
+    camera = Camera(this, canvasSize);
     tiles = Tiles(scheet, data);
 
     setupDebugger();

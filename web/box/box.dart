@@ -20,6 +20,6 @@ class Box {
   num get maxX => minX + size.x;
   num get maxY => minY + size.y;
 
-  num get centerX => minX + size.x ~/ 2;
-  num get centerY => minY + size.y ~/ 2;
+  num get centerX => position.x + size.x / 2;
+  num get centerY => position.y + size.y / 2;
 }

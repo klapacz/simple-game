@@ -17,11 +17,11 @@ class Matrix<T> extends ListBase {
     ];
   }
 
-  Matrix.fromList(List<T> list, int height, int width) {
-    rows = [for (var i = 0; i < (list.length / width).ceil(); i++) []];
+  Matrix.fromList(List<T> list, Vector size) {
+    rows = [for (var i = 0; i < (list.length / size.x).ceil(); i++) []];
 
     for (var i = 0; i < list.length; i++) {
-      rows[(i / width).floor()].add(list[i]);
+      rows[(i / size.x).floor()].add(list[i]);
     }
   }
 

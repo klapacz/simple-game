@@ -1,42 +1,68 @@
 import 'box/box.dart';
+import 'game.dart';
 import 'vector.dart';
 
 class Camera {
   Box toFollow;
-  Vector cameraSize;
-  num scale;
+  num scale = 2;
+  Game game;
 
-  Camera(this.cameraSize, [this.scale = 1]);
+  Vector size;
+
+  Camera(this.game, this.size);
 
   Box transform(Box box) {
-    Box transformedBox, tranformedToFollow;
+    final tranformedToFollow = toFollow.scaled(scale).rouned;
 
-    transformedBox = box.scaled(scale).rouned;
-    tranformedToFollow = toFollow.scaled(scale).rouned;
+    final centerPlayerOnX = tranformedToFollow.position.x >
+        size.x / 2 - tranformedToFollow.size.x / 2;
+
+    final centerPlayerOnY = tranformedToFollow.position.y >
+        size.y / 2 - tranformedToFollow.size.y / 2;
+
+    final transformedMapSize = game.tiles.size * 16 * scale;
+
+    final onMapEndY =
+        tranformedToFollow.centerY > transformedMapSize.y - size.y / 2;
+    final onMapEndX =
+        tranformedToFollow.centerX > transformedMapSize.x - size.x / 2;
 
     if (box == toFollow) {
-      transformedBox.position.x = tranformedToFollow.position.x >
-              cameraSize.x / 2 - tranformedToFollow.size.x / 2
-          ? cameraSize.x / 2 - tranformedToFollow.size.x / 2
-          : tranformedToFollow.position.x;
+      if (onMapEndX) {
+        tranformedToFollow.position.x += size.x - transformedMapSize.x;
+      } else if (centerPlayerOnX) {
+        tranformedToFollow.position.x =
+            size.x / 2 - tranformedToFollow.size.x / 2;
+      }
 
-      transformedBox.position.y =
-          cameraSize.y / 2 - tranformedToFollow.size.y / 2;
+      if (onMapEndY) {
+        tranformedToFollow.position.y += size.y - transformedMapSize.y;
+      } else if (centerPlayerOnY) {
+        tranformedToFollow.position.y =
+            size.y / 2 - tranformedToFollow.size.y / 2;
+      }
+
+      return tranformedToFollow;
     } else {
-      transformedBox.position.x = tranformedToFollow.position.x >
-              cameraSize.x / 2 - tranformedToFollow.size.x / 2
-          ? (cameraSize.x / 2 -
-                  tranformedToFollow.size.x / 2 +
-                  transformedBox.position.x) -
-              tranformedToFollow.position.x
-          : transformedBox.position.x;
+      final transformedBox = box.scaled(scale).rouned;
 
-      transformedBox.position.y = (cameraSize.y / 2 -
-              tranformedToFollow.size.y / 2 +
-              transformedBox.position.y) -
-          tranformedToFollow.position.y;
+      if (onMapEndX) {
+        transformedBox.position.x += size.x - transformedMapSize.x;
+      } else if (centerPlayerOnX) {
+        transformedBox.position.x += size.x / 2 -
+            tranformedToFollow.size.x / 2 -
+            tranformedToFollow.position.x;
+      }
+
+      if (onMapEndY) {
+        transformedBox.position.y += size.y - transformedMapSize.y;
+      } else if (centerPlayerOnY) {
+        transformedBox.position.y += size.y / 2 -
+            tranformedToFollow.size.y / 2 -
+            tranformedToFollow.position.y;
+      }
+
+      return transformedBox;
     }
-
-    return transformedBox;
   }
 }
