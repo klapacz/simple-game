@@ -3,9 +3,11 @@ import 'dart:html';
 class Timer {
   num deltaTime, accumulatedTime = 0, lastTime = 0;
   Function(num) update;
+  Function draw;
+
   int fps = 0;
 
-  Timer(this.update, {this.deltaTime = 1 / 60}) {
+  Timer(this.update, this.draw, {this.deltaTime = 1 / 60}) {
     enqueue();
   }
 
@@ -23,6 +25,8 @@ class Timer {
     }
 
     lastTime = time;
+
+    draw();
 
     enqueue();
   }

@@ -74,9 +74,7 @@ class Game {
         canvas.requestFullscreen();
       }
 
-      entities.forEach((entity) {
-        if (entity is Drawable) entity.draw(context, camera);
-
+      for (var entity in entities) {
         if (entity is Updateable) {
           entity.update(deltaTime, this);
         }
@@ -84,7 +82,11 @@ class Game {
         if (entity is Jump) entity.updateJump(deltaTime, this);
 
         if (entity is Movable) entity.updateMove(deltaTime, this);
-      });
+      }
+    }, () {
+      for (var entity in entities) {
+        if (entity is Drawable) entity.draw(context, camera);
+      }
     });
   }
 }

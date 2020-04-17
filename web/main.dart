@@ -1,10 +1,7 @@
-import 'dart:html';
-
 import 'entities/entities.dart';
 import 'fetch.dart';
 
 import 'game.dart';
-import 'vector.dart';
 
 void main() async {
   final response = await Future.wait(
