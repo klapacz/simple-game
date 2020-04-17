@@ -17,14 +17,6 @@ void main() async {
   game.camera.toFollow = player;
   game.debugger.player = player;
 
-  NumberInputElement input = querySelector('input[type=number]');
-
-  input.value = '${game.camera.scale}';
-
-  input.onChange.listen((event) {
-    game.camera.scale = input.valueAsNumber;
-  });
-
   game.entities.addAll([
     Background(game.canvasSize, color: '#5d988d'),
     game.tiles,
@@ -32,7 +24,9 @@ void main() async {
     game.debugger
   ]);
 
-  // game.debugger.texts.add(() => '${player.collisionDirections}');
-
-  game.start((num deltaTime, Game game) {});
+  game.start((num deltaTime, Game game) {
+    for (var i = 1; i < 10; i++) {
+      if (game.keyboard.isClickedKey('$i')) game.camera.scale = i;
+    }
+  });
 }

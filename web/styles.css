@@ -9,21 +9,3 @@ body {
     align-items: center;
     background-color: #636363;
 }
-
-.wrapper {
-    margin: 5px;
-    display: flex;
-    flex-direction: column;
-}
-
-#output {
-    border: 4px solid #464646;
-}
-
-input[type=number] {
-    border: none;
-    background-color: #464646;
-    color: #efefef;
-    padding: 5px;
-    font-family: inherit;
-}
