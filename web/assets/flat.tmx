@@ -28,7 +28,7 @@
 29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29
 </data>
  </layer>
- <objectgroup id="2" name="objects">
+ <objectgroup id="2" name="snakes">
   <object id="5" type="snake" x="109.148" y="207.808" width="56.7046" height="12.1276"/>
   <object id="6" type="snake" x="267.318" y="215.754" width="167.583" height="15.6049"/>
  </objectgroup>

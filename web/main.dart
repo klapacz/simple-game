@@ -1,18 +1,9 @@
 import 'entities/entities.dart';
 
 import 'game.dart';
+import 'vector.dart';
 
 void main() async {
-  // final response = await Future.wait([
-  //   fetchImage('assets/sheet.png'),
-  //   fetchImage('assets/characters.png'),
-  //   fetchJson('assets/level-1.json')
-  // ]);
-
-  // ImageElement sheet = response[0];
-  // ImageElement characters = response[1];
-  // Map data = response[2];
-
   final game = Game();
   await game.setup();
 
@@ -21,9 +12,24 @@ void main() async {
   game.camera.toFollow = player;
   game.debugger.player = player;
 
+  final snakes = [];
+
+  for (var layer in game.data['levelData']['layers']) {
+    print(layer);
+    if (layer['name'] == 'snakes') {
+      for (var object in layer['objects']) {
+        if (object['type'] == 'snake') {
+          snakes.add(Snake(
+              Vector(object['x'], object['y']), object['x'] + object['width']));
+        }
+      }
+    }
+  }
+
   game.entities.addAll([
     Background(game.canvasSize, color: '#5d988d'),
     game.tilesMap,
+    ...snakes,
     player,
     game.debugger
   ]);

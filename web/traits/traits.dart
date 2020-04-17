@@ -12,7 +12,8 @@ export 'animation.dart';
 export 'gravity.dart';
 
 abstract class Physical extends Box
-    with Movable, Gravity, Drawable, Updateable {
+    with Movable, Gravity
+    implements Drawable, Updateable {
   Physical(size, position) : super(size, position);
 }
 
