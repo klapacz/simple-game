@@ -6,18 +6,17 @@ import 'entities/entities.dart';
 import 'traits/traits.dart';
 import 'traits/movable.dart';
 import 'utilities/canvas.dart';
+import 'utilities/entities_factory.dart';
 import 'vector.dart';
 
 import 'utilities/fetch.dart';
 
-class Game with CanvasUtilities {
+class Game with CanvasUtilities, EntitiesFactory {
   Keyboard keyboard;
   Camera camera;
   TilesMap tilesMap;
   Debugger debugger;
   Timer timer;
-
-  List entities = [];
 
   Map data;
 
@@ -25,8 +24,8 @@ class Game with CanvasUtilities {
     data = await fetchAllAs({
       'sheet': fetchImage('assets/sheet.png'),
       'characters': fetchImage('assets/characters.png'),
-      // 'levelData': fetchJson('assets/level-1.json'),
-      'levelData': fetchJson('assets/flat.json'),
+      'levelData': fetchJson('assets/level-1.json'),
+      // 'levelData': fetchJson('assets/flat.json'),
     });
 
     setupCanvas('#output', Vector(500, 400));
@@ -35,6 +34,9 @@ class Game with CanvasUtilities {
     tilesMap = TilesMap(data['sheet'], data['levelData']);
 
     setupDebugger();
+
+    setupEntities(this);
+    start();
   }
 
   void setupDebugger() {
