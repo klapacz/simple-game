@@ -12,10 +12,6 @@ import 'tile.dart';
 
 export 'tile.dart';
 
-class TileResolver {
-  ImageElement sheet;
-}
-
 class TilesMap extends Drawable {
   ImageElement sheet;
 
@@ -26,6 +22,9 @@ class TilesMap extends Drawable {
   Layer get collisionLayer =>
       layers.firstWhere((layer) => layer.name == 'collision');
 
+  List<Layer> get collisionLayers =>
+      layers.where((layer) => layer.properties['collision'] == true).toList();
+
   var tileSize = 16;
   Vector size;
 
@@ -35,10 +34,23 @@ class TilesMap extends Drawable {
     for (var layerData in data['layers']) {
       if (layerData['type'] == 'tilelayer') layers.add(Layer(this, layerData));
     }
+
+    print(collisionLayers);
   }
 
-  Matrix<Tile> collidingTiles(Box box) {
-    return collisionLayer.collidingTiles(box);
+  List<Tile> collidingTiles(Box box, [List<Layer> layers]) {
+    layers ??= collisionLayers;
+
+    var minY = (box.minY / tileSize).floor(),
+        maxY = (box.maxY / tileSize).ceil();
+    var minX = (box.minX / tileSize).floor(),
+        maxX = (box.maxX / tileSize).ceil();
+
+    return layers
+        .map((layer) => layer.tiles.getPart(minX, minY, maxX, maxY).toList())
+        .expand((i) => i)
+        //
+        .toList();
   }
 
   @override

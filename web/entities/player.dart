@@ -1,5 +1,6 @@
 import '../box/box.dart';
 
+import '../collision.dart';
 import '../game.dart';
 import '../vector.dart';
 
@@ -57,9 +58,28 @@ class Player extends Physical with Jump, Animation, PlayerAnimation {
 
     velocity.x += go;
 
-    if (minY > game.tilesMap.size.y * game.tilesMap.tileSize) {
-      position = Vector.blank();
+    // restart game
+
+    var restart = minY > game.tilesMap.size.y * game.tilesMap.tileSize;
+
+    for (var snake in game.snakes) {
+      if (aabb(this, snake)) restart = true;
     }
+
+    if (restart) {
+      position = Vector.blank();
+      stopJump();
+    }
+
+    // remove flowers lol
+    var flowersLayer =
+        game.tilesMap.layers.firstWhere((layer) => layer.name == 'flowers');
+
+    game.tilesMap.collidingTiles(this, [flowersLayer]).forEach((tile) {
+      flowersLayer.tiles[tile.y][tile.x] = null;
+
+      flowersLayer.updateTilesImage();
+    });
   }
 
   @override

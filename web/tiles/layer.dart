@@ -23,15 +23,28 @@ class Layer {
   ImageElement get sheet => tilesMap.sheet;
   int get tileSize => tilesMap.tileSize;
 
+  final properties = {};
+
   Layer(this.tilesMap, Map layerData) {
     name = layerData['name'];
     size = Vector(layerData['width'], layerData['height']);
+
+    // create matrix
 
     var rawTilesMatrix = Matrix.fromList(layerData['data'], size);
 
     tiles = Matrix.fromMatrix(rawTilesMatrix, (x, y, number) {
       return number != 0 ? Tile(x, y, number - 1, tileSize) : null;
     });
+
+    // set properties
+    if (layerData['properties'] != null) {
+      for (var property in layerData['properties']) {
+        properties[property['name']] = property['value'];
+      }
+
+      print(properties);
+    }
 
     updateTilesImage();
   }

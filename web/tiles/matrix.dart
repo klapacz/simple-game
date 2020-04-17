@@ -66,6 +66,11 @@ class Matrix<T> extends ListBase {
   }
 
   @override
+  List<T> toList({bool growable = true}) {
+    return rows.expand((i) => i).where((tile) => tile != null).toList();
+  }
+
+  @override
   set length(int newLength) => rows.length = newLength;
 
   @override
