@@ -46,7 +46,7 @@ mixin Movable on Box {
   void updateMovable(num deltaTime, Game game) {
     velocity *= deltaTime;
 
-    moveAndCheckCollision(mapCollider: game.mapCollider);
+    moveAndCheckCollision(mapCollider: game.map.collider);
 
     velocity = Vector.blank();
   }

@@ -15,9 +15,7 @@ mixin EntitiesFactory {
 
     snakes = [];
 
-    print(game.mapIllustrator);
-
-    for (var objectGroup in game.mapIllustrator.map.objectGroups) {
+    for (var objectGroup in game.map.data.objectGroups) {
       for (var object in objectGroup.tmxObjects) {
         if (object.type == 'snake') {
           snakes
@@ -28,7 +26,7 @@ mixin EntitiesFactory {
 
     entities = [
       Background(game.canvasSize, color: '#5d988d'),
-      game.mapIllustrator,
+      game.map.illustrator,
       ...snakes,
       player,
       game.graphicDebugger

@@ -5,8 +5,7 @@ import 'package:tiled/tiled.dart';
 
 import 'camera.dart';
 import 'keyboard.dart';
-import 'tiles/tile_map_collider.dart';
-import 'tiles/tile_map_illustrator.dart';
+import 'tiles/tile_map_provider.dart';
 import 'timer.dart';
 import 'entities/entities.dart';
 import 'traits/traits.dart';
@@ -14,8 +13,6 @@ import 'traits/movable.dart';
 import 'utilities/canvas.dart';
 import 'utilities/entities_factory.dart';
 import 'vector.dart';
-
-import 'package:path/path.dart' as p;
 
 import 'utilities/fetch.dart';
 
@@ -38,45 +35,17 @@ class Game with CanvasUtilities, EntitiesFactory {
   Debugger graphicDebugger;
   Timer timer;
 
-  TileMapCollider mapCollider;
-  TileMapIllustrator mapIllustrator;
-
-  @override
-  CanvasRenderingContext2D context;
+  TileMapProvider map;
 
   Map data;
 
   void setup() async {
-    var tileMapSource = 'assets/level-1.tmx';
-
     data = await fetchAllAs({
       'characters': fetchImage('assets/characters.png'),
-      'tmxString': fetchString(tileMapSource),
+      'map': TileMapProvider.provide(),
     });
 
-    var parser = TileMapParser();
-    var map = parser.parse(data['tmxString']);
-
-    for (var value in map.properties.values) {
-      print('$value, ${value.runtimeType}');
-    }
-
-    Map<dynamic, Future> imagesToFetch = {};
-
-    for (var tileset in map.tilesets) {
-      for (var image in tileset.images) {
-        var path = p.join(p.dirname(tileMapSource), image.source);
-
-        imagesToFetch[image] = fetchImage(path);
-      }
-    }
-
-    var images = await fetchAllAs(imagesToFetch);
-    mapIllustrator = TileMapIllustrator(map, this, images);
-
-    mapCollider = TileMapCollider(map);
-
-    print(mapCollider.getLayersPart(map.layers, 0, 0, 2, 2));
+    map = data['map'];
 
     setupCanvas('#output', Vector(500, 400));
     keyboard = Keyboard();

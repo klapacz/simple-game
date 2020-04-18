@@ -20,7 +20,7 @@ class Camera {
     final centerPlayerOnY = tranformedToFollow.position.y >
         size.y / 2 - tranformedToFollow.size.y / 2;
 
-    final transformedMapSize = game.mapIllustrator.size * scale;
+    final transformedMapSize = game.map.size * scale;
 
     final onMapEndY =
         tranformedToFollow.centerY > transformedMapSize.y - size.y / 2;

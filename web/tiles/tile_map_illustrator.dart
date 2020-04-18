@@ -9,44 +9,37 @@ import '../game.dart';
 import '../traits/traits.dart';
 import '../vector.dart';
 import 'layer_illustrator.dart';
+import 'tile_map_provider.dart';
 
 class TileMapIllustrator implements Drawable {
-  TileMap map;
-  Game game;
-  CanvasElement _image;
-  Vector size;
+  TileMap data;
+  TileMapProvider map;
+  CanvasElement _backgroundImage;
+  CanvasElement _foregroundImage;
 
   Map tilesetsImages;
 
   Map<Layer, LayerIllustrator> layersIllustrators = {};
 
-  TileMapIllustrator(this.map, this.game, this.tilesetsImages) {
-    _calculateTileMapSize();
+  TileMapIllustrator(this.map) {
+    tilesetsImages = map.tilesetsImages;
+    data = map.data;
+
     _createLayersIllustrators();
 
-    _image = CanvasElement(width: size.x, height: size.y);
+    _backgroundImage = CanvasElement(width: map.size.x, height: map.size.y);
+    _foregroundImage = CanvasElement(width: map.size.x, height: map.size.y);
     drawMapImage();
   }
 
   void _createLayersIllustrators() {
-    for (var layer in map.layers) {
+    for (var layer in data.layers) {
       layersIllustrators[layer] = LayerIllustrator(layer, this);
     }
   }
 
-  void _calculateTileMapSize() {
-    var layers = map.layers;
-    var tileSize = Vector(map.tileWidth, map.tileHeight);
-
-    var widths = layers.map((layer) => layer.width);
-    var heights = layers.map((layer) => layer.height);
-
-    size = Vector(widths.reduce(max), heights.reduce(max))
-        .multiplyByVector(tileSize);
-  }
-
   void drawMapImage() {
-    var context = _image.context2D;
+    var context = _backgroundImage.context2D;
 
     for (var layer in layersIllustrators.values) {
       context.drawImage(layer.image, 0, 0);
@@ -55,9 +48,9 @@ class TileMapIllustrator implements Drawable {
 
   @override
   void draw(CanvasRenderingContext2D context, Camera camera, Game game) {
-    var toDraw = camera.transform(Box(Vector.blank(), size));
+    var toDraw = camera.transform(Box(Vector.blank(), map.size));
 
-    context.drawImageScaled(_image, toDraw.position.x, toDraw.position.y,
-        toDraw.size.x, toDraw.size.y);
+    context.drawImageScaled(_backgroundImage, toDraw.position.x,
+        toDraw.position.y, toDraw.size.x, toDraw.size.y);
   }
 }

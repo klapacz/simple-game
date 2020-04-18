@@ -2,29 +2,32 @@ import 'package:tiled/tiled.dart';
 
 import '../box/box.dart';
 import '../vector.dart';
+import 'tile_map_provider.dart';
 
 class TileMapCollider {
-  TileMap map;
+  TileMap data;
   Map<Layer, List<List<Box>>> tilesAsBoxes = {};
 
-  List<Layer> get collisionLayers =>
-      [map.layers.firstWhere((layer) => layer.name == 'collision')];
+  TileMapCollider(TileMapProvider mapProvider) {
+    data = mapProvider.data;
 
-  TileMapCollider(this.map) {
-    for (var layer in map.layers) {
+    for (var layer in data.layers) {
       tilesAsBoxes[layer] = [
         for (var i = 0; i < layer.height; i++) List(layer.width)
       ];
     }
   }
 
+  List<Layer> get collisionLayers =>
+      [data.layers.firstWhere((layer) => layer.name == 'collision')];
+
   List<Box> collidingTiles(Box box, [List<Layer> layers]) {
     layers ??= collisionLayers;
 
-    var minY = (box.minY / map.tileHeight).floor(),
-        maxY = (box.maxY / map.tileHeight).ceil();
-    var minX = (box.minX / map.tileWidth).floor(),
-        maxX = (box.maxX / map.tileWidth).ceil();
+    var minY = (box.minY / data.tileHeight).floor(),
+        maxY = (box.maxY / data.tileHeight).ceil();
+    var minX = (box.minX / data.tileWidth).floor(),
+        maxX = (box.maxX / data.tileWidth).ceil();
 
     return getLayersPart(layers, minX, minY, maxX, maxY);
   }
@@ -52,7 +55,7 @@ class TileMapCollider {
 
   Box getTileAsBox(Layer layer, int x, int y) {
     return tilesAsBoxes[layer][y][x] ??= Box(
-        Vector(x * map.tileWidth, y * map.tileHeight),
-        Vector(map.tileWidth, map.tileHeight));
+        Vector(x * data.tileWidth, y * data.tileHeight),
+        Vector(data.tileWidth, data.tileHeight));
   }
 }
