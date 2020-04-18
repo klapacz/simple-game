@@ -7,8 +7,6 @@ pub get
 webdev serve
 ```
 
-[Try online!](https://kornellapacz.github.io/simple-game-page/)
-
 ## Credits
 
 Some parts of the code are based on [super mario by Meth Meth Method](https://github.com/meth-meth-method/super-mario).
