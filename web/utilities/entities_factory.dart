@@ -11,7 +11,7 @@ mixin EntitiesFactory {
     player = Player();
 
     game.camera.toFollow = player;
-    game.debugger.player = player;
+    game.graphicDebugger.player = player;
 
     snakes = [];
 
@@ -31,7 +31,7 @@ mixin EntitiesFactory {
       game.tilesMap,
       ...snakes,
       player,
-      game.debugger
+      game.graphicDebugger
     ];
   }
 }

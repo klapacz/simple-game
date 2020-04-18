@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:tiled/tiled.dart';
+
 import 'camera.dart';
 import 'keyboard.dart';
 import 'tiles/tiles.dart';
@@ -15,7 +19,7 @@ class Game with CanvasUtilities, EntitiesFactory {
   Keyboard keyboard;
   Camera camera;
   TilesMap tilesMap;
-  Debugger debugger;
+  Debugger graphicDebugger;
   Timer timer;
 
   Map data;
@@ -26,7 +30,16 @@ class Game with CanvasUtilities, EntitiesFactory {
       'characters': fetchImage('assets/characters.png'),
       'levelData': fetchJson('assets/level-1.json'),
       // 'levelData': fetchJson('assets/flat.json'),
+      'tmxString': fetchString('assets/level-1.tmx'),
+      'tsxString': fetchString('assets/forest.tsx'),
     });
+
+    var parser = TileMapParser();
+    var map = parser.parse(data['tmxString']);
+
+    for (var layer in map.layers) {
+      print(layer);
+    }
 
     setupCanvas('#output', Vector(500, 400));
     keyboard = Keyboard();
@@ -40,11 +53,11 @@ class Game with CanvasUtilities, EntitiesFactory {
   }
 
   void setupDebugger() {
-    debugger = Debugger();
+    graphicDebugger = Debugger();
 
-    debugger.game = this;
+    graphicDebugger.game = this;
 
-    debugger.texts.addAll([
+    graphicDebugger.texts.addAll([
       () => 'simple game (${timer.fps} FPS)',
     ]);
   }

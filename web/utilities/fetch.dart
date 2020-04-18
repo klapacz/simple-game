@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:html';
 
-Future<ImageElement> fetchImage(url) async {
+Future<ImageElement> fetchImage(String url) async {
   final request = await HttpRequest.request(url, responseType: 'blob');
   final image = ImageElement(src: Url.createObjectUrl(request.response));
 
@@ -10,8 +10,10 @@ Future<ImageElement> fetchImage(url) async {
   return image;
 }
 
-Future<Map> fetchJson(url) async {
-  final jsonString = await HttpRequest.getString(url);
+Future fetchString(String url) async => HttpRequest.getString(url);
+
+Future<Map> fetchJson(String url) async {
+  final jsonString = await fetchString(url);
   final jsonData = json.decode(jsonString) as Map;
 
   return jsonData;
