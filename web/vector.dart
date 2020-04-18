@@ -22,5 +22,7 @@ class Vector {
 
   Vector operator *(num number) => Vector(x * number, y * number);
 
+  Vector multiplyByVector(Vector vector) => Vector(x * vector.x, y * vector.y);
+
   bool equal(Vector vector) => x == vector.x && y == vector.y;
 }

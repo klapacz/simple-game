@@ -22,4 +22,7 @@ class Box {
 
   num get centerX => position.x + size.x / 2;
   num get centerY => position.y + size.y / 2;
+
+  @override
+  String toString() => '$position $size';
 }

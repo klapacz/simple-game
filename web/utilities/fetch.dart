@@ -19,7 +19,7 @@ Future<Map> fetchJson(String url) async {
   return jsonData;
 }
 
-Future<Map> fetchAllAs(Map<String, Future> toFetch) async {
+Future<Map> fetchAllAs(Map<dynamic, Future> toFetch) async {
   final response = await Future.wait(toFetch.values);
   final result = {};
 

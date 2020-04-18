@@ -7,10 +7,11 @@ environment:
   sdk: '>=2.7.0 <3.0.0'
 
 dependencies:
-  tiled: any
+  tiled: 
+    git: https://github.com/kornellapacz/tiled.dart.git
+  path: any
 
 dev_dependencies:
   build_runner: ^1.6.0
   build_web_compilers: ^2.3.0
   pedantic: ^1.8.0
-  dwds: any

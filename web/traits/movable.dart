@@ -1,7 +1,7 @@
 import 'dart:core';
 
 import '../game.dart';
-import '../tiles/tiles.dart';
+import '../tiles/tile_map_collider.dart';
 import '../vector.dart';
 import '../box/box.dart';
 
@@ -11,13 +11,13 @@ mixin Movable on Box {
   var collisionDirections = <Directions>{};
   Vector velocity = Vector.blank();
 
-  void moveAndCheckCollision({TilesMap tilesMap}) {
+  void moveAndCheckCollision({TileMapCollider mapCollider}) {
     collisionDirections.clear();
 
     if (velocity.x != 0) {
       position.x += velocity.x;
 
-      tilesMap.collidingTiles(this).forEach((Box block) {
+      mapCollider.collidingTiles(this).forEach((Box block) {
         if (velocity.x > 0) {
           position.x = block.minX - size.x;
           collisionDirections.add(Directions.Right);
@@ -31,7 +31,7 @@ mixin Movable on Box {
     if (velocity.y != 0) {
       position.y += velocity.y;
 
-      tilesMap.collidingTiles(this).forEach((Box block) {
+      mapCollider.collidingTiles(this).forEach((Box block) {
         if (velocity.y > 0) {
           position.y = block.minY - size.y;
           collisionDirections.add(Directions.Bottom);
@@ -46,7 +46,7 @@ mixin Movable on Box {
   void updateMovable(num deltaTime, Game game) {
     velocity *= deltaTime;
 
-    moveAndCheckCollision(tilesMap: game.tilesMap);
+    moveAndCheckCollision(mapCollider: game.mapCollider);
 
     velocity = Vector.blank();
   }

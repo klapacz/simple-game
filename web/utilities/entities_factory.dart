@@ -15,20 +15,20 @@ mixin EntitiesFactory {
 
     snakes = [];
 
-    for (var layer in game.data['levelData']['layers']) {
-      if (layer['type'] == 'objectgroup') {
-        for (var object in layer['objects']) {
-          if (object['type'] == 'snake') {
-            snakes.add(Snake(Vector(object['x'], object['y']),
-                object['x'] + object['width']));
-          }
+    print(game.mapIllustrator);
+
+    for (var objectGroup in game.mapIllustrator.map.objectGroups) {
+      for (var object in objectGroup.tmxObjects) {
+        if (object.type == 'snake') {
+          snakes
+              .add(Snake(Vector(object.x, object.y), object.x + object.width));
         }
       }
     }
 
     entities = [
       Background(game.canvasSize, color: '#5d988d'),
-      game.tilesMap,
+      game.mapIllustrator,
       ...snakes,
       player,
       game.graphicDebugger
