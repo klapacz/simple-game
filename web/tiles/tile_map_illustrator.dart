@@ -69,10 +69,15 @@ class TileMapIllustrator {
     }
   }
 
+  void updateLayerImage(Layer layer) {
+    layersIllustrators[layer]..drawLayerImage();
+
+    drawMapImage();
+  }
+
   void drawMapImage() {
     if (data.properties.containsKey('background')) {
       final backgroundColor = data.properties['background'];
-      print(backgroundColor);
       final mapSize = map.size.multiplyByVector(map.tileSize);
 
       backgroundImage.context2D

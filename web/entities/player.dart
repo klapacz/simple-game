@@ -72,14 +72,6 @@ class Player extends Physical with Jump, Animation, PlayerAnimation {
     }
 
     // remove flowers lol
-    // var flowersLayer =
-    //     game.tilesMap.layers.firstWhere((layer) => layer.name == 'flowers');
-
-    // game.tilesMap.collidingTiles(this, [flowersLayer]).forEach((tile) {
-    //   flowersLayer.tiles[tile.y][tile.x] = null;
-
-    //   flowersLayer.updateTilesImage();
-    // });
   }
 
   @override

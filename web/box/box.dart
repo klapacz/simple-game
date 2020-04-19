@@ -5,6 +5,8 @@ import '../vector.dart';
 
 export 'color_box.dart';
 
+export 'tile_box.dart';
+
 class Box extends Rectangle {
   Vector position, size;
 

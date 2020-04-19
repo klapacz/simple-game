@@ -21,7 +21,7 @@ class TileMapCollider {
   List<Layer> get collisionLayers =>
       [data.layers.firstWhere((layer) => layer.name == 'collision')];
 
-  List<Box> collidingTiles(Box box, [List<Layer> layers]) {
+  List<TileBox> collidingTiles(Box box, [List<Layer> layers]) {
     layers ??= collisionLayers;
 
     var minY = (box.top / data.tileHeight).floor(),
@@ -32,10 +32,9 @@ class TileMapCollider {
     return getLayersPart(layers, minX, minY, maxX, maxY);
   }
 
-  List<Box> getLayersPart(
+  List<TileBox> getLayersPart(
       List<Layer> layers, int minX, int minY, int maxX, int maxY) {
-    var result = <Box>[];
-    var debug = [];
+    var result = <TileBox>[];
 
     for (var layer in layers) {
       for (var y = minY; y < maxY; y++) {
@@ -43,7 +42,6 @@ class TileMapCollider {
           for (var x = minX; x < maxX; x++) {
             if (x >= 0 && x < layer.width && layer.tileMatrix[y][x] != 0) {
               result.add(getTileAsBox(layer, x, y));
-              debug.add(layer.tileMatrix[y][x]);
             }
           }
         }
@@ -54,8 +52,11 @@ class TileMapCollider {
   }
 
   Box getTileAsBox(Layer layer, int x, int y) {
-    return tilesAsBoxes[layer][y][x] ??= Box(
-        Vector(x * data.tileWidth, y * data.tileHeight),
-        Vector(data.tileWidth, data.tileHeight));
+    return tilesAsBoxes[layer][y][x] ??= TileBox(
+      Vector(x * data.tileWidth, y * data.tileHeight),
+      Vector(data.tileWidth, data.tileHeight),
+      layer: layer,
+      tilePostion: Vector(x, y),
+    );
   }
 }
