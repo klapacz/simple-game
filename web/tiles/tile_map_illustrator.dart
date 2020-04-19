@@ -11,11 +11,42 @@ import '../vector.dart';
 import 'layer_illustrator.dart';
 import 'tile_map_provider.dart';
 
-class TileMapIllustrator implements Drawable {
+enum DrawTypes { Background, Foreground }
+
+class Illustrator extends Drawable {
+  TileMapIllustrator tileMapIllustrator;
+  DrawTypes drawType;
+
+  Illustrator(
+    this.tileMapIllustrator,
+    this.drawType,
+  );
+
+  @override
+  void draw(CanvasRenderingContext2D context, Camera camera, Game game) {
+    final toDraw =
+        camera.transform(Box(Vector.blank(), tileMapIllustrator.map.size));
+
+    var image;
+
+    if (drawType == DrawTypes.Background) {
+      image = tileMapIllustrator.backgroundImage;
+    }
+
+    if (drawType == DrawTypes.Foreground) {
+      image = tileMapIllustrator.foregroundImage;
+    }
+
+    context.drawImageScaled(image, toDraw.position.x, toDraw.position.y,
+        toDraw.size.x, toDraw.size.y);
+  }
+}
+
+class TileMapIllustrator {
   TileMap data;
   TileMapProvider map;
-  CanvasElement _backgroundImage;
-  CanvasElement _foregroundImage;
+  CanvasElement backgroundImage;
+  CanvasElement foregroundImage;
 
   Map tilesetsImages;
 
@@ -27,8 +58,8 @@ class TileMapIllustrator implements Drawable {
 
     _createLayersIllustrators();
 
-    _backgroundImage = CanvasElement(width: map.size.x, height: map.size.y);
-    _foregroundImage = CanvasElement(width: map.size.x, height: map.size.y);
+    backgroundImage = CanvasElement(width: map.size.x, height: map.size.y);
+    foregroundImage = CanvasElement(width: map.size.x, height: map.size.y);
     drawMapImage();
   }
 
@@ -39,18 +70,28 @@ class TileMapIllustrator implements Drawable {
   }
 
   void drawMapImage() {
-    var context = _backgroundImage.context2D;
+    if (data.properties.containsKey('background')) {
+      final backgroundColor = data.properties['background'];
+      print(backgroundColor);
+      final mapSize = map.size.multiplyByVector(map.tileSize);
 
-    for (var layer in layersIllustrators.values) {
-      context.drawImage(layer.image, 0, 0);
+      backgroundImage.context2D
+        ..fillStyle = backgroundColor
+        ..fillRect(0, 0, mapSize.x, mapSize.y);
     }
+
+    layersIllustrators.forEach((layer, illustrator) {
+      var context = backgroundImage.context2D;
+
+      if (layer.properties.containsKey('foreground') &&
+          layer.properties['foreground'] == true) {
+        context = foregroundImage.context2D;
+      }
+
+      context.drawImage(illustrator.image, 0, 0);
+    });
   }
 
-  @override
-  void draw(CanvasRenderingContext2D context, Camera camera, Game game) {
-    var toDraw = camera.transform(Box(Vector.blank(), map.size));
-
-    context.drawImageScaled(_backgroundImage, toDraw.position.x,
-        toDraw.position.y, toDraw.size.x, toDraw.size.y);
-  }
+  Illustrator get background => Illustrator(this, DrawTypes.Background);
+  Illustrator get foreground => Illustrator(this, DrawTypes.Foreground);
 }

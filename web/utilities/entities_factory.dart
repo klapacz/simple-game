@@ -25,11 +25,11 @@ mixin EntitiesFactory {
     }
 
     entities = [
-      Background(game.canvasSize, color: '#5d988d'),
-      game.map.illustrator,
+      game.map.illustrator.background,
       ...snakes,
       player,
-      game.graphicDebugger
+      game.graphicDebugger,
+      game.map.illustrator.foreground
     ];
   }
 }
