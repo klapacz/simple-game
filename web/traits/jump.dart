@@ -1,23 +1,32 @@
 import 'movable.dart';
 import '../vector.dart';
 import '../game.dart';
+import 'traits.dart';
 
 mixin Jump on Movable {
   bool isJumping = false;
   final defaultJumpTime = 0;
   int jumpTime = 0;
   int onFloorTime = 0;
-  var defaultJumpSpeed = Vector(0, -400);
+  var defaultJumpSpeed = Vector(0, -250);
 
   Vector get jump => isJumping ? defaultJumpSpeed : Vector(0, 0);
 
   void startJump() {
-    if (isJumping == false && onFloorTime > 5) isJumping = true;
+    if (isJumping == false && onFloorTime > 5) {
+      isJumping = true;
+      if (this is Gravity) {
+        (this as Gravity).disabledGravity = true;
+      }
+    }
   }
 
   void stopJump() {
     isJumping = false;
     jumpTime = defaultJumpTime;
+    if (this is Gravity) {
+      (this as Gravity).disabledGravity = false;
+    }
   }
 
   void updateJump(num deltaTime, Game game) {

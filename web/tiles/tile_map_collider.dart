@@ -18,8 +18,17 @@ class TileMapCollider {
     }
   }
 
-  List<Layer> get collisionLayers =>
-      [data.layers.firstWhere((layer) => layer.name == 'collision')];
+  List<Layer> get collisionLayers => data.layers
+      .where((layer) =>
+          layer.properties.containsKey('collision') &&
+          layer.properties['collision'] == true)
+      .toList();
+
+  List<Layer> get ladderLayers => data.layers
+      .where((layer) =>
+          layer.properties.containsKey('ladder') &&
+          layer.properties['ladder'] == true)
+      .toList();
 
   List<TileBox> collidingTiles(Box box, [List<Layer> layers]) {
     layers ??= collisionLayers;

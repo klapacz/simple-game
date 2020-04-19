@@ -85,6 +85,8 @@ class TileMapIllustrator {
         ..fillRect(0, 0, mapSize.x, mapSize.y);
     }
 
+    print(data.properties);
+
     layersIllustrators.forEach((layer, illustrator) {
       var context = backgroundImage.context2D;
 

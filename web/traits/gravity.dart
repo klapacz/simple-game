@@ -2,8 +2,9 @@ import 'traits.dart';
 
 mixin Gravity on Movable {
   var gravity = 150;
+  var disabledGravity = false;
 
   void updateGravity() {
-    velocity.y += gravity;
+    if (!disabledGravity) velocity.y += gravity;
   }
 }

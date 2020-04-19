@@ -48,12 +48,28 @@ class Player extends Physical with Jump, Animation, PlayerAnimation {
   void update(num deltaTime, Game game) {
     var go = 0;
 
+    final ladderLayers = game.map.collider.ladderLayers;
+
+    final onLadder =
+        game.map.collider.collidingTiles(this, ladderLayers).isNotEmpty;
+
+    if (onLadder) {
+      var ladderSpeed = 0;
+
+      disabledGravity = true;
+
+      if (game.keyboard.isClickedKey('w')) ladderSpeed = -speed;
+      if (game.keyboard.isClickedKey('s')) ladderSpeed = speed;
+
+      velocity.y += ladderSpeed;
+    } else if (!isJumping) {
+      disabledGravity = false;
+    }
+
     if (game.keyboard.isClickedKey('a')) go = -speed;
     if (game.keyboard.isClickedKey('d')) go = speed;
     if (game.keyboard.isClickedKey(' ')) {
       startJump();
-    } else {
-      stopJump();
     }
 
     velocity.x += go;
@@ -70,8 +86,6 @@ class Player extends Physical with Jump, Animation, PlayerAnimation {
       position = Vector.blank();
       stopJump();
     }
-
-    // remove flowers lol
   }
 
   @override
