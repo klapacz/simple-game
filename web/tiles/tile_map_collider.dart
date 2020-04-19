@@ -24,10 +24,10 @@ class TileMapCollider {
   List<Box> collidingTiles(Box box, [List<Layer> layers]) {
     layers ??= collisionLayers;
 
-    var minY = (box.minY / data.tileHeight).floor(),
-        maxY = (box.maxY / data.tileHeight).ceil();
-    var minX = (box.minX / data.tileWidth).floor(),
-        maxX = (box.maxX / data.tileWidth).ceil();
+    var minY = (box.top / data.tileHeight).floor(),
+        maxY = (box.bottom / data.tileHeight).ceil();
+    var minX = (box.left / data.tileWidth).floor(),
+        maxX = (box.right / data.tileWidth).ceil();
 
     return getLayersPart(layers, minX, minY, maxX, maxY);
   }

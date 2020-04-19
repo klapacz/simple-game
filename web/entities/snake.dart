@@ -34,7 +34,7 @@ class Snake extends Physical with Animation {
 
   @override
   void update(num deltaTime, Game game) {
-    if (maxX > arenaMax || minX < arenaMin) {
+    if (right > arenaMax || left < arenaMin) {
       speed = -speed;
       flipFrame = !flipFrame;
     }

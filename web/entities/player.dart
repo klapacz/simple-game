@@ -60,7 +60,7 @@ class Player extends Physical with Jump, Animation, PlayerAnimation {
 
     // restart game
 
-    var restart = minY > game.map.size.y;
+    var restart = top > game.map.size.y;
 
     for (var snake in game.snakes) {
       if (aabb(this, snake)) restart = true;

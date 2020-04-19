@@ -19,10 +19,10 @@ mixin Movable on Box {
 
       mapCollider.collidingTiles(this).forEach((Box block) {
         if (velocity.x > 0) {
-          position.x = block.minX - size.x;
+          position.x = block.left - size.x;
           collisionDirections.add(Directions.Right);
         } else if (velocity.x < 0) {
-          position.x = block.maxX;
+          position.x = block.right;
           collisionDirections.add(Directions.Left);
         }
       });
@@ -33,10 +33,10 @@ mixin Movable on Box {
 
       mapCollider.collidingTiles(this).forEach((Box block) {
         if (velocity.y > 0) {
-          position.y = block.minY - size.y;
+          position.y = block.top - size.y;
           collisionDirections.add(Directions.Bottom);
         } else if (velocity.y < 0) {
-          position.y = block.maxY;
+          position.y = block.bottom;
           collisionDirections.add(Directions.Top);
         }
       });
