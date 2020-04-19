@@ -1,8 +1,11 @@
+import 'dart:html';
+
 import '../box/box.dart';
 import '../game.dart';
+import '../vector.dart';
 
 mixin Animation {
-  Map<String, List<Box>> animations;
+  Map<String, List<Rectangle>> animations;
 
   String currentAnimation;
   int currentFrame = 0;
@@ -29,15 +32,15 @@ mixin Animation {
     var toDraw = camera.transform(this);
 
     final frame = animations[currentAnimation][currentFrame];
-    final destSize = frame.size * camera.scale;
+    final destSize = Vector(frame.width, frame.height) * camera.scale;
 
     if (!flipFrame) {
       context.drawImageScaledFromSource(
           game.data['characters'],
-          frame.position.x,
-          frame.position.y,
-          frame.size.x,
-          frame.size.y,
+          frame.left,
+          frame.top,
+          frame.width,
+          frame.height,
           toDraw.position.x,
           toDraw.position.y,
           destSize.x,
@@ -47,10 +50,10 @@ mixin Animation {
       context.scale(-1, 1);
       context.drawImageScaledFromSource(
           game.data['characters'],
-          frame.position.x,
-          frame.position.y,
-          frame.size.x,
-          frame.size.y,
+          frame.left,
+          frame.top,
+          frame.width,
+          frame.height,
           -toDraw.position.x - toDraw.size.x,
           toDraw.position.y,
           destSize.x,

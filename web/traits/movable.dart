@@ -10,6 +10,7 @@ enum Directions { Left, Right, Top, Bottom }
 mixin Movable on Box {
   var collisionDirections = <Directions>{};
   Vector velocity = Vector.blank();
+  Vector lastVelocity = Vector.blank();
 
   void moveAndCheckCollision({TileMapCollider mapCollider}) {
     collisionDirections.clear();
@@ -48,6 +49,7 @@ mixin Movable on Box {
 
     moveAndCheckCollision(mapCollider: game.map.collider);
 
+    lastVelocity = velocity.cloned;
     velocity = Vector.blank();
   }
 }
