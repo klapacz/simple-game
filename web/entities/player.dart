@@ -37,7 +37,7 @@ mixin PlayerAnimation on Animation, Movable, Jump {
   void changeFrame() {
     if (collisionDirections.contains(Directions.Bottom)) {
       currentAnimation = velocity.x == 0 ? 'stop' : 'go';
-    } else if (onLadder) {
+    } else if (onLadder || (this as Player).standingOnLadder) {
       currentAnimation = 'stop-on-ladder';
 
       if (velocity.y != 0) currentAnimation = 'climbing';
@@ -60,6 +60,8 @@ class Player extends Physical with Jump, Animation, PlayerAnimation {
   Player() : super(Vector(10, 10), Vector(15, 23));
 
   bool onLadder = false;
+  bool goLadderDown = false;
+  bool standingOnLadder = false;
 
   @override
   void update(num deltaTime, Game game) {
@@ -75,13 +77,33 @@ class Player extends Physical with Jump, Animation, PlayerAnimation {
     var ladderTiles = game.map.collider.collidingTiles(this, ladderLayers);
     onLadder = ladderTiles.isNotEmpty && penetration(width / 2, ladderTiles);
 
+    if (standingOnLadder) {
+      var ladderSpeed = 0;
+
+      if (game.keyboard.isClickedKey('s')) {
+        goLadderDown = true;
+        ladderSpeed = speed;
+      } else {
+        goLadderDown = false;
+      }
+
+      velocity.y += ladderSpeed;
+    }
+
     if (onLadder) {
       var ladderSpeed = 0;
+
+      stopJump();
 
       disabledGravity = true;
 
       if (game.keyboard.isClickedKey('w')) ladderSpeed = -speed;
-      if (game.keyboard.isClickedKey('s')) ladderSpeed = speed;
+      if (game.keyboard.isClickedKey('s')) {
+        goLadderDown = true;
+        ladderSpeed = speed;
+      } else {
+        goLadderDown = false;
+      }
 
       velocity.y += ladderSpeed;
     } else if (!isJumping) {

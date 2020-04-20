@@ -14,6 +14,7 @@ mixin Jump on Movable {
 
   void startJump() {
     if (isJumping == false && onFloorTime > 5) {
+      print('jumpIsStarted');
       isJumping = true;
       if (this is Gravity) {
         (this as Gravity).disabledGravity = true;
@@ -42,7 +43,8 @@ mixin Jump on Movable {
       onFloorTime = 0;
     }
 
-    if (jumpTime <= 0 || collisionDirections.contains(Directions.Top)) {
+    if (isJumping &&
+        (jumpTime <= 0 || collisionDirections.contains(Directions.Top))) {
       stopJump();
     }
   }
