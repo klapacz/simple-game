@@ -4,9 +4,9 @@ import '../vector.dart';
 import 'box.dart';
 
 class TileBox extends Box {
-  Layer layer;
+  Tile tile;
   Vector tilePostion;
 
-  TileBox(Vector position, Vector size, {this.layer, this.tilePostion})
+  TileBox(Vector position, Vector size, {this.tile, this.tilePostion})
       : super(position, size);
 }

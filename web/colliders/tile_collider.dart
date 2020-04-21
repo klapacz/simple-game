@@ -1,3 +1,5 @@
+import 'package:tiled/tiled.dart';
+
 import '../box/box.dart';
 import 'colliders.dart';
 
@@ -12,10 +14,10 @@ class TileCollider extends Collider {
   Type get name => TileCollider;
 
   @override
-  void onX(game, mapCollider) {
+  void onX(game, tiles) {
     collisionDirections.removeAll([Directions.Left, Directions.Right]);
 
-    mapCollider.collidingTiles(entity).forEach((Box block) {
+    tiles.forEach((Box block) {
       if (move.by.x > 0) {
         entity.position.x = block.left - entity.size.x;
         collisionDirections.add(Directions.Right);
@@ -27,10 +29,10 @@ class TileCollider extends Collider {
   }
 
   @override
-  void onY(game, mapCollider) {
+  void onY(game, tiles) {
     collisionDirections.removeAll([Directions.Top, Directions.Bottom]);
 
-    mapCollider.collidingTiles(entity).forEach((Box block) {
+    tiles.forEach((Box block) {
       if (move.by.y > 0) {
         entity.position.y = block.top - entity.size.y;
         collisionDirections.add(Directions.Bottom);
@@ -39,5 +41,13 @@ class TileCollider extends Collider {
         collisionDirections.add(Directions.Top);
       }
     });
+  }
+
+  @override
+  bool Function(TileBox) test(Layer layer) {
+    return (TileBox box) =>
+        layer.properties['platform'] != true &&
+        box.tile.properties['collision'] != null &&
+        box.tile.properties['collision'] == true;
   }
 }

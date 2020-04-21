@@ -1,5 +1,7 @@
 import 'dart:core';
+import 'dart:developer';
 
+import '../box/box.dart';
 import '../colliders/colliders.dart';
 import '../entities/entity.dart';
 import '../game.dart';
@@ -33,24 +35,48 @@ class Move implements Trait {
   @override
   Type get name => Move;
 
-  void moveAndCheckCollision(game) {
+  void _findColliding(mapCollider, Function(Collider, List<TileBox>) callback) {
+    final collidingLayers = mapCollider.collidingTiles(entity);
+
+    colliders.values.forEach((collider) {
+      final collidingTiles = <TileBox>[];
+
+      collidingLayers.forEach((layer, tiles) {
+        collidingTiles.addAll(
+          tiles.where(collider.test(layer)),
+        );
+      });
+
+      callback(collider, collidingTiles);
+    });
+  }
+
+  void moveAndCheckCollision(Game game) {
+    final mapCollider = game.map.collider;
+
     if (by.x != 0) {
       entity.position.x += by.x;
 
-      colliders.values
-          .forEach((collider) => collider.onX(game, game.map.collider));
+      _findColliding(
+        mapCollider,
+        (collider, tiles) => collider.onX(game, tiles),
+      );
     }
 
     if (by.y != 0) {
       entity.position.y += by.y;
 
-      colliders.values
-          .forEach((collider) => collider.onY(game, game.map.collider));
+      _findColliding(
+        mapCollider,
+        (collider, tiles) => collider.onY(game, tiles),
+      );
     }
 
     if (by.x != 0 || by.y != 0) {
-      colliders.values
-          .forEach((collider) => collider.both(game, game.map.collider));
+      _findColliding(
+        mapCollider,
+        (collider, tiles) => collider.both(game, tiles),
+      );
     }
   }
 

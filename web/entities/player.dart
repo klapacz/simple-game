@@ -83,6 +83,8 @@ class Player extends BoxEntity {
 
   @override
   void update(num deltaTime, Game game) {
+    super.update(deltaTime, game);
+
     var go = 0;
 
     if (ladderCollider.standingOnLadder) {
@@ -138,8 +140,6 @@ class Player extends BoxEntity {
       position = Vector.blank();
       jump.stop();
     }
-
-    super.update(deltaTime, game);
   }
 }
 

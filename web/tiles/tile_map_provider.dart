@@ -9,7 +9,7 @@ import 'tile_map_collider.dart';
 import 'tile_map_illustrator.dart';
 
 class TileMapProvider {
-  static var tileMapSource = 'assets/flat.tmx'; // assets/level-1.tmx
+  static var tileMapSource = 'assets/level-1.tmx'; // assets/level-1.tmx
 
   TileMapIllustrator illustrator;
   TileMapCollider collider;

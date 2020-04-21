@@ -36,7 +36,7 @@ class Snake extends BoxEntity {
 
     addTrait(animation);
     addTrait(Gravity(this));
-    addTrait(move = Move(this));
+    addTrait(move = Move.withTileCollider(this));
   }
 
   @override

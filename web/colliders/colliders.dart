@@ -1,3 +1,6 @@
+import 'package:tiled/tiled.dart';
+
+import '../box/box.dart';
 import '../entities/entity.dart';
 import '../game.dart';
 import '../tiles/tile_map_collider.dart';
@@ -13,8 +16,12 @@ class Collider {
 
   Collider(this.move, this.entity);
 
-  void onX(Game game, TileMapCollider mapCollider) {}
+  void onX(Game game, List<TileBox> tiles) {}
 
-  void onY(Game game, TileMapCollider mapCollider) {}
-  void both(Game game, TileMapCollider mapCollider) {}
+  void onY(Game game, List<TileBox> tiles) {}
+  void both(Game game, List<TileBox> tiles) {}
+
+  bool Function(TileBox) test(Layer layer) {
+    return (TileBox tile) => true;
+  }
 }

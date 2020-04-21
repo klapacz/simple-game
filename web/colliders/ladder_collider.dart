@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:tiled/tiled.dart';
+
 import '../box/tile_box.dart';
 import '../game.dart';
 import '../tiles/tile_map_collider.dart';
@@ -22,12 +24,7 @@ class LadderCollider extends Collider {
   }
 
   @override
-  void onY(Game game, TileMapCollider mapCollider) {}
-
-  @override
-  void both(Game game, TileMapCollider mapCollider) {
-    final ladderLayers = game.map.collider.ladderLayers;
-    final ladderTiles = mapCollider.collidingTiles(entity, ladderLayers);
+  void both(Game game, ladderTiles) {
     final penetration = calculatePenetration(entity.width / 2, ladderTiles);
     onLadder = ladderTiles.isNotEmpty && penetration;
 
@@ -41,5 +38,12 @@ class LadderCollider extends Collider {
     } else {
       standingOnLadder = false;
     }
+  }
+
+  @override
+  bool Function(TileBox) test(Layer layer) {
+    return (TileBox box) =>
+        box.tile.properties['ladder'] != null &&
+        box.tile.properties['ladder'] == true;
   }
 }
