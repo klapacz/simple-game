@@ -7,9 +7,13 @@ import '../game.dart';
 import '../vector.dart';
 
 import '../traits/traits.dart';
+import 'entity.dart';
 
-mixin PlayerAnimation on Animation, Movable, Jump {
-  bool onLadder;
+class PlayerAnimation extends Animation {
+  PlayerAnimation(Player entity) : super(entity);
+
+  Player get player => entity as Player;
+  Move get move => player.move;
 
   @override
   final animations = {
@@ -35,90 +39,92 @@ mixin PlayerAnimation on Animation, Movable, Jump {
 
   @override
   void changeFrame() {
-    if (collisionDirections.contains(Directions.Bottom)) {
-      currentAnimation = velocity.x == 0 ? 'stop' : 'go';
-    } else if (onLadder || (this as Player).standingOnLadder) {
+    final tileCollider = move.colliders[TileCollider] as TileCollider;
+
+    if (tileCollider.collisionDirections.contains(Directions.Bottom)) {
+      currentAnimation = move.by.x == 0 ? 'stop' : 'go';
+    } else if (player.ladderCollider.onLadder ||
+        player.ladderCollider.standingOnLadder) {
       currentAnimation = 'stop-on-ladder';
 
-      if (velocity.y != 0) currentAnimation = 'climbing';
+      if (move.by.y != 0) currentAnimation = 'climbing';
     } else {
-      currentAnimation = position.y < lastPositionY ? 'jump' : 'fall';
+      currentAnimation = player.position.y < lastPositionY ? 'jump' : 'fall';
     }
 
-    if (velocity.x > 0) flipFrame = false;
-    if (velocity.x < 0) flipFrame = true;
+    if (move.by.x > 0) flipFrame = false;
+    if (move.by.x < 0) flipFrame = true;
 
-    lastPositionY = position.y;
+    lastPositionY = player.position.y;
   }
 }
 
-class Player extends Physical with Jump, Animation, PlayerAnimation {
+class Player extends BoxEntity {
+  Move move;
+  PlayerAnimation animation;
+  Jump jump;
+  Gravity gravity;
+  LadderCollider ladderCollider;
+
+  Player() : super(Vector(10, 10), Vector(15, 23)) {
+    illustrators.add(animation = PlayerAnimation(this));
+
+    addTrait(animation);
+    addTrait(gravity = Gravity(this));
+    addTrait(jump = Jump(this));
+    addTrait(move = Move.withTileCollider(this));
+
+    move.addCollider(ladderCollider = LadderCollider(move, this));
+
+    jump.time = 21;
+  }
+
   final speed = 100;
-  @override
-  final defaultJumpTime = 21;
-
-  Player() : super(Vector(10, 10), Vector(15, 23));
-
-  bool onLadder = false;
-  bool goLadderDown = false;
-  bool standingOnLadder = false;
 
   @override
   void update(num deltaTime, Game game) {
     var go = 0;
 
-    final ladderLayers = game.map.collider.ladderLayers;
-
-    bool penetration(num biggerThan, List<TileBox> tiles) {
-      var tile = tiles[0];
-      return tile.left - biggerThan < left && tile.right + biggerThan > right;
-    }
-
-    var ladderTiles = game.map.collider.collidingTiles(this, ladderLayers);
-    onLadder = ladderTiles.isNotEmpty && penetration(width / 2, ladderTiles);
-
-    if (standingOnLadder) {
+    if (ladderCollider.standingOnLadder) {
       var ladderSpeed = 0;
 
       if (game.keyboard.isClickedKey('s')) {
-        goLadderDown = true;
+        ladderCollider.goLadderDown = true;
         ladderSpeed = speed;
       } else {
-        goLadderDown = false;
+        ladderCollider.goLadderDown = false;
       }
 
-      velocity.y += ladderSpeed;
-    }
-
-    if (onLadder) {
+      move.by.y += ladderSpeed;
+    } else if (ladderCollider.onLadder) {
       var ladderSpeed = 0;
 
-      stopJump();
+      jump.stop();
 
-      disabledGravity = true;
+      gravity.disabled = true;
 
       if (game.keyboard.isClickedKey('w')) ladderSpeed = -speed;
       if (game.keyboard.isClickedKey('s')) {
-        goLadderDown = true;
+        ladderCollider.goLadderDown = true;
         ladderSpeed = speed;
       } else {
-        goLadderDown = false;
+        ladderCollider.goLadderDown = false;
       }
 
-      velocity.y += ladderSpeed;
-    } else if (!isJumping) {
-      disabledGravity = false;
+      move.by.y += ladderSpeed;
+    } else if (!jump.isJumping) {
+      gravity.disabled = false;
     }
 
     if (game.keyboard.isClickedKey('a')) go = -speed;
     if (game.keyboard.isClickedKey('d')) go = speed;
     if (game.keyboard.isClickedKey(' ')) {
-      startJump();
-    } else if (!onLadder) {
-      stopJump();
+      jump.start();
+    } else if (!ladderCollider.onLadder) {
+      jump.stop();
     }
 
-    velocity.x += go;
+    move.by.x += go;
 
     // restart game
 
@@ -130,17 +136,92 @@ class Player extends Physical with Jump, Animation, PlayerAnimation {
 
     if (restart) {
       position = Vector.blank();
-      stopJump();
+      jump.stop();
     }
-  }
 
-  @override
-  void draw(context, camera, game) {
-    drawFrame(context, camera, game);
-
-    // context
-    //   ..fillStyle = '#80008033'
-    //   ..fillRect(
-    //       toDraw.position.x, toDraw.position.y, toDraw.size.x, toDraw.size.y);
+    super.update(deltaTime, game);
   }
 }
+
+// class Player extends Physical with Jump, Animation, PlayerAnimation {
+//   final speed = 100;
+//   @override
+//   final defaultJumpTime = 21;
+
+//   Player() : super(Vector(10, 10), Vector(15, 23));
+
+//   bool onLadder = false;
+//   bool goLadderDown = false;
+//   bool standingOnLadder = false;
+
+//   @override
+//   void update(num deltaTime, Game game) {
+//     var go = 0;
+
+//     final ladderLayers = game.map.collider.ladderLayers;
+
+//     bool penetration(num biggerThan, List<TileBox> tiles) {
+//       var tile = tiles[0];
+//       return tile.left - biggerThan < left && tile.right + biggerThan > right;
+//     }
+
+//     var ladderTiles = game.map.collider.collidingTiles(this, ladderLayers);
+//     onLadder = ladderTiles.isNotEmpty && penetration(width / 2, ladderTiles);
+
+//     if (standingOnLadder) {
+//       var ladderSpeed = 0;
+
+//       if (game.keyboard.isClickedKey('s')) {
+//         goLadderDown = true;
+//         ladderSpeed = speed;
+//       } else {
+//         goLadderDown = false;
+//       }
+
+//       move.by.y += ladderSpeed;
+//     }
+
+//     if (onLadder) {
+//       var ladderSpeed = 0;
+
+//       jump.stop();
+
+//       gravity.disabled = true;
+
+//       if (game.keyboard.isClickedKey('w')) ladderSpeed = -speed;
+//       if (game.keyboard.isClickedKey('s')) {
+//         goLadderDown = true;
+//         ladderSpeed = speed;
+//       } else {
+//         goLadderDown = false;
+//       }
+
+//       move.by.y += ladderSpeed;
+//     } else if (!jump.isJumping) {
+//       gravity.disabled = false;
+//     }
+
+//     if (game.keyboard.isClickedKey('a')) go = -speed;
+//     if (game.keyboard.isClickedKey('d')) go = speed;
+//     if (game.keyboard.isClickedKey(' ')) {
+//       jump.start();
+//     } else if (!onLadder) {
+//       jump.stop();
+//     }
+
+//     move.by.x += go;
+
+//     // restart game
+
+//     var restart = top > game.map.size.y;
+
+//     for (var snake in game.snakes) {
+//       if (aabb(this, snake)) restart = true;
+//     }
+
+//     if (restart) {
+//       position = Vector.blank();
+//       jump.stop();
+//     }
+//   }
+// }

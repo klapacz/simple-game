@@ -1,10 +1,21 @@
+import '../entities/entity.dart';
+import '../game.dart';
 import 'traits.dart';
 
-mixin Gravity on Movable {
-  var gravity = 150;
-  var disabledGravity = false;
+class Gravity implements Trait {
+  var value = 150;
+  var disabled = false;
 
-  void updateGravity() {
-    if (!disabledGravity) velocity.y += gravity;
+  BoxEntity entity;
+
+  Gravity(this.entity);
+
+  @override
+  Type get name => Gravity;
+  Move get move => (entity.traits[Move] as Move);
+
+  @override
+  void update(num deltaTime, Game game) {
+    if (!disabled) move.by.y += value;
   }
 }

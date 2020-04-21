@@ -49,7 +49,7 @@ class TileMapProvider {
     var parser = TileMapParser();
     var tileMap = parser.parse(tmxString);
 
-    Map<dynamic, Future> imagesToFetch = {};
+    final imagesToFetch = <dynamic, Future>{};
 
     for (var tileset in tileMap.tilesets) {
       for (var image in tileset.images) {

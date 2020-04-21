@@ -1,5 +1,4 @@
 import 'dart:html';
-import 'dart:math';
 
 import 'package:tiled/tiled.dart';
 
@@ -84,8 +83,6 @@ class TileMapIllustrator {
         ..fillStyle = backgroundColor
         ..fillRect(0, 0, mapSize.x, mapSize.y);
     }
-
-    print(data.properties);
 
     layersIllustrators.forEach((layer, illustrator) {
       var context = backgroundImage.context2D;

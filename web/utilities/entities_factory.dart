@@ -11,7 +11,6 @@ mixin EntitiesFactory {
     player = Player();
 
     game.camera.toFollow = player;
-    game.graphicDebugger.player = player;
 
     snakes = [];
 

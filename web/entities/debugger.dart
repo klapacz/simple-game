@@ -1,21 +1,15 @@
 import '../traits/traits.dart';
 import 'dart:html';
 
-import '../box/box.dart';
 import '../camera.dart';
-import '../game.dart';
-import '../vector.dart';
+import 'entity.dart';
 
 export 'player.dart';
 
-class Debugger implements Drawable, Updateable {
-  final texts = <Function>[];
-  Box player;
-  var debugBox = Box(Vector.blank(), Vector.blank());
-  Game game;
+class TextsIllustrator implements Drawable {
+  Debugger entity;
 
-  @override
-  void update(num deltaTime, Game game) {}
+  TextsIllustrator(this.entity);
 
   @override
   void draw(CanvasRenderingContext2D context, Camera camera, game) {
@@ -23,8 +17,16 @@ class Debugger implements Drawable, Updateable {
       ..font = '30px VT323, monospace'
       ..fillStyle = '#efefef';
 
-    texts.asMap().forEach((i, text) {
+    entity.texts.asMap().forEach((i, text) {
       context.fillText(text(), 10, 40 + 40 * i);
     });
+  }
+}
+
+class Debugger extends Entity {
+  final texts = <Function>[];
+
+  Debugger() {
+    illustrators.add(TextsIllustrator(this));
   }
 }

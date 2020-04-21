@@ -1,20 +1,28 @@
 import 'dart:html';
 
-import '../box/box.dart';
+import '../entities/entity.dart';
 import '../game.dart';
 import '../vector.dart';
+import 'traits.dart';
 
-mixin Animation {
+class Animation implements Trait, Drawable {
   Map<String, List<Rectangle>> animations;
+  BoxEntity entity;
 
   String currentAnimation;
   int currentFrame = 0;
   num frameTime = 0;
   bool flipFrame = false;
 
+  Animation(this.entity);
+
+  @override
+  Type get name => Animation;
+
   void changeFrame() {}
 
-  void updateAnimation(deltaTime, Game game) {
+  @override
+  void update(deltaTime, Game game) {
     changeFrame();
     frameTime += deltaTime;
 
@@ -26,10 +34,11 @@ mixin Animation {
     if (currentFrame >= animations[currentAnimation].length) currentFrame = 0;
   }
 
-  void drawFrame(context, camera, game) {
+  @override
+  void draw(context, camera, game) {
     if (currentFrame == null) return;
 
-    var toDraw = camera.transform(this);
+    var toDraw = camera.transform(entity);
 
     final frame = animations[currentAnimation][currentFrame];
     final destSize = Vector(frame.width, frame.height) * camera.scale;

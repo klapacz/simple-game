@@ -1,51 +1,63 @@
-import 'movable.dart';
+import '../entities/entity.dart';
 import '../vector.dart';
 import '../game.dart';
 import 'traits.dart';
 
-mixin Jump on Movable {
+class Jump implements Trait {
+  Entity entity;
+
   bool isJumping = false;
-  final defaultJumpTime = 0;
-  int jumpTime = 0;
-  int onFloorTime = 0;
-  var defaultJumpSpeed = Vector(0, -250);
+  int time = 0, jumpTime = 0, onFloorTime = 0;
+  Vector defaultJumpSpeed = Vector(0, -400);
+
+  Jump(this.entity);
+
+  @override
+  Type get name => Jump;
+
+  Move get move => entity.traits[Move];
+  set move(Move newMove) => entity.traits[Move] = newMove;
 
   Vector get jump => isJumping ? defaultJumpSpeed : Vector(0, 0);
 
-  void startJump() {
+  void start() {
     if (isJumping == false && onFloorTime > 5) {
-      print('jumpIsStarted');
       isJumping = true;
       if (this is Gravity) {
-        (this as Gravity).disabledGravity = true;
+        (this as Gravity).disabled = true;
       }
     }
   }
 
-  void stopJump() {
-    isJumping = false;
-    jumpTime = defaultJumpTime;
-    if (this is Gravity) {
-      (this as Gravity).disabledGravity = false;
+  void stop() {
+    if (isJumping) {
+      isJumping = false;
+      jumpTime = time;
+      if (this is Gravity) {
+        (this as Gravity).disabled = false;
+      }
     }
   }
 
-  void updateJump(num deltaTime, Game game) {
+  @override
+  void update(num deltaTime, Game game) {
     if (isJumping == true) {
       jumpTime--;
     }
 
-    velocity += jump;
+    move.by += jump;
 
-    if (collisionDirections.contains(Directions.Bottom)) {
+    final tileCollider = move.colliders[TileCollider] as TileCollider;
+
+    if (tileCollider.collisionDirections.contains(Directions.Bottom)) {
       onFloorTime++;
     } else {
       onFloorTime = 0;
     }
 
-    if (isJumping &&
-        (jumpTime <= 0 || collisionDirections.contains(Directions.Top))) {
-      stopJump();
+    if (jumpTime <= 0 ||
+        tileCollider.collisionDirections.contains(Directions.Top)) {
+      stop();
     }
   }
 }

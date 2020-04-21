@@ -1,12 +1,14 @@
 import 'dart:html';
 
 import '../box/box.dart';
-import '../camera.dart';
 import '../game.dart';
 import '../traits/traits.dart';
 import '../vector.dart';
+import 'entity.dart';
 
-class Snake extends Physical with Animation {
+class SnakeAnimation extends Animation {
+  SnakeAnimation(entity) : super(entity);
+
   @override
   final animations = {
     'go': [
@@ -19,26 +21,33 @@ class Snake extends Physical with Animation {
 
   @override
   final currentAnimation = 'go';
+}
 
+class Snake extends BoxEntity {
   num arenaMin, arenaMax;
   num speed = 50;
+  Animation animation;
+  Move move;
 
-  Snake(position, this.arenaMax)
-      : arenaMin = position.x,
-        super(position, Vector(16, 14));
+  Snake(position, this.arenaMax) : super(position, Vector(16, 14)) {
+    arenaMin = position.x;
 
-  @override
-  void draw(CanvasRenderingContext2D context, Camera camera, Game game) {
-    drawFrame(context, camera, game);
+    illustrators.add(animation = SnakeAnimation(this));
+
+    addTrait(animation);
+    addTrait(Gravity(this));
+    addTrait(move = Move(this));
   }
 
   @override
   void update(num deltaTime, Game game) {
     if (right > arenaMax || left < arenaMin) {
       speed = -speed;
-      flipFrame = !flipFrame;
+      animation.flipFrame = !animation.flipFrame;
     }
 
-    velocity.x = speed;
+    move.by.x += speed;
+
+    super.update(deltaTime, game);
   }
 }

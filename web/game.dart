@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'dart:math';
 
 import 'package:tiled/tiled.dart';
@@ -9,7 +8,6 @@ import 'tiles/tile_map_provider.dart';
 import 'timer.dart';
 import 'entities/entities.dart';
 import 'traits/traits.dart';
-import 'traits/movable.dart';
 import 'utilities/canvas.dart';
 import 'utilities/entities_factory.dart';
 import 'vector.dart';
@@ -61,8 +59,6 @@ class Game with CanvasUtilities, EntitiesFactory {
   void setupDebugger() {
     graphicDebugger = Debugger();
 
-    graphicDebugger.game = this;
-
     graphicDebugger.texts.addAll([
       () => 'simple game (${timer.fps} FPS)',
     ]);
@@ -82,10 +78,10 @@ class Game with CanvasUtilities, EntitiesFactory {
         entity.update(deltaTime, this);
       }
 
-      if (entity is Animation) entity.updateAnimation(deltaTime, this);
-      if (entity is Jump) entity.updateJump(deltaTime, this);
-      if (entity is Gravity) entity.updateGravity();
-      if (entity is Movable) entity.updateMovable(deltaTime, this);
+      // if (entity is Animation) entity.updateAnimation(deltaTime, this);
+      // if (entity is Jump) entity.updateJump(deltaTime, this);
+      // if (entity is Gravity) entity.updateGravity();
+      // if (entity is Movable) entity.updateMovable(deltaTime, this);
     }
   }
 
