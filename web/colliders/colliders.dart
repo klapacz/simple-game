@@ -2,12 +2,11 @@ import 'package:tiled/tiled.dart';
 
 import '../box/box.dart';
 import '../entities/entity.dart';
-import '../game.dart';
-import '../tiles/tile_map_collider.dart';
 import '../traits/move.dart';
 
 export 'ladder_collider.dart';
 export 'tile_collider.dart';
+export 'platform_collider.dart';
 
 class Collider {
   Move move;
@@ -16,10 +15,12 @@ class Collider {
 
   Collider(this.move, this.entity);
 
-  void onX(Game game, List<TileBox> tiles) {}
+  void onX(Move move, List<TileBox> tiles) {}
 
-  void onY(Game game, List<TileBox> tiles) {}
-  void both(Game game, List<TileBox> tiles) {}
+  void onY(Move move, List<TileBox> tiles) {}
+  void both(Move move, List<TileBox> tiles) {}
+
+  void nothing(Move move) {}
 
   bool Function(TileBox) test(Layer layer) {
     return (TileBox tile) => true;

@@ -1,5 +1,4 @@
 import 'dart:core';
-import 'dart:developer';
 
 import '../box/box.dart';
 import '../colliders/colliders.dart';
@@ -11,12 +10,16 @@ import 'traits.dart';
 
 export '../colliders/colliders.dart';
 
+enum Directions { Left, Right, Top, Bottom, Platform }
+
 class Move implements Trait {
   BoxEntity entity;
 
   Vector by = Vector.blank();
   Vector lastVelocity = Vector.blank();
+
   Map<Type, Collider> colliders = {};
+  Set<Directions> collisionDirections = {};
 
   Move(this.entity);
 
@@ -24,6 +27,7 @@ class Move implements Trait {
     final move = Move(entity);
 
     move.addCollider(TileCollider(move, entity));
+    move.addCollider(PlatformCollider(move, entity));
 
     return move;
   }
@@ -47,19 +51,25 @@ class Move implements Trait {
         );
       });
 
-      callback(collider, collidingTiles);
+      if (collidingTiles.isNotEmpty) {
+        callback(collider, collidingTiles);
+      } else {
+        collider.nothing(this);
+      }
     });
   }
 
   void moveAndCheckCollision(Game game) {
     final mapCollider = game.map.collider;
 
+    collisionDirections.clear();
+
     if (by.x != 0) {
       entity.position.x += by.x;
 
       _findColliding(
         mapCollider,
-        (collider, tiles) => collider.onX(game, tiles),
+        (collider, tiles) => collider.onX(this, tiles),
       );
     }
 
@@ -68,14 +78,14 @@ class Move implements Trait {
 
       _findColliding(
         mapCollider,
-        (collider, tiles) => collider.onY(game, tiles),
+        (collider, tiles) => collider.onY(this, tiles),
       );
     }
 
     if (by.x != 0 || by.y != 0) {
       _findColliding(
         mapCollider,
-        (collider, tiles) => collider.both(game, tiles),
+        (collider, tiles) => collider.both(this, tiles),
       );
     }
   }

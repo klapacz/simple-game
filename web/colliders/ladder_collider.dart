@@ -3,8 +3,7 @@ import 'dart:math';
 import 'package:tiled/tiled.dart';
 
 import '../box/tile_box.dart';
-import '../game.dart';
-import '../tiles/tile_map_collider.dart';
+import '../traits/move.dart';
 import 'colliders.dart';
 
 class LadderCollider extends Collider {
@@ -24,9 +23,8 @@ class LadderCollider extends Collider {
   }
 
   @override
-  void both(Game game, ladderTiles) {
-    final penetration = calculatePenetration(entity.width / 2, ladderTiles);
-    onLadder = ladderTiles.isNotEmpty && penetration;
+  void both(Move move, ladderTiles) {
+    onLadder = calculatePenetration(entity.width / 2, ladderTiles);
 
     if (onLadder &&
         move.by.y > 0 &&
@@ -38,6 +36,11 @@ class LadderCollider extends Collider {
     } else {
       standingOnLadder = false;
     }
+  }
+
+  @override
+  void nothing(Move move) {
+    onLadder = false;
   }
 
   @override

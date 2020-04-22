@@ -47,16 +47,13 @@ class Jump implements Trait {
 
     move.by += jump;
 
-    final tileCollider = move.colliders[TileCollider] as TileCollider;
-
-    if (tileCollider.collisionDirections.contains(Directions.Bottom)) {
+    if (move.collisionDirections.contains(Directions.Bottom)) {
       onFloorTime++;
     } else {
       onFloorTime = 0;
     }
 
-    if (jumpTime <= 0 ||
-        tileCollider.collisionDirections.contains(Directions.Top)) {
+    if (jumpTime <= 0 || move.collisionDirections.contains(Directions.Top)) {
       stop();
     }
   }

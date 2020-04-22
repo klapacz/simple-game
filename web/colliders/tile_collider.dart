@@ -1,44 +1,37 @@
 import 'package:tiled/tiled.dart';
 
 import '../box/box.dart';
+import '../traits/traits.dart';
 import 'colliders.dart';
 
-enum Directions { Left, Right, Top, Bottom }
-
 class TileCollider extends Collider {
-  Set<Directions> collisionDirections = {};
-
   TileCollider(move, entity) : super(move, entity);
 
   @override
   Type get name => TileCollider;
 
   @override
-  void onX(game, tiles) {
-    collisionDirections.removeAll([Directions.Left, Directions.Right]);
-
+  void onX(Move move, tiles) {
     tiles.forEach((Box block) {
       if (move.by.x > 0) {
         entity.position.x = block.left - entity.size.x;
-        collisionDirections.add(Directions.Right);
+        move.collisionDirections.add(Directions.Right);
       } else if (move.by.x < 0) {
         entity.position.x = block.right;
-        collisionDirections.add(Directions.Left);
+        move.collisionDirections.add(Directions.Left);
       }
     });
   }
 
   @override
-  void onY(game, tiles) {
-    collisionDirections.removeAll([Directions.Top, Directions.Bottom]);
-
+  void onY(Move move, tiles) {
     tiles.forEach((Box block) {
       if (move.by.y > 0) {
         entity.position.y = block.top - entity.size.y;
-        collisionDirections.add(Directions.Bottom);
+        move.collisionDirections.add(Directions.Bottom);
       } else if (move.by.y < 0) {
         entity.position.y = block.bottom;
-        collisionDirections.add(Directions.Top);
+        move.collisionDirections.add(Directions.Top);
       }
     });
   }
