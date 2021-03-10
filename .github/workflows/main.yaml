@@ -1,0 +1,33 @@
+name: Build and deploy
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      BASE_URL: /words/
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+
+    - name: Install dependencies
+      run: dart pub get
+
+    - name: Build
+      run: |
+        dart pub global activate webdev
+        webdev build
+
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./build
